@@ -6,6 +6,13 @@ install:
 test:
 	pytest --cov=shapelyM/ --cov-report=term-missing --cov-fail-under=70
 
+lint:
+	flake8 ./shapelyM ./tests
+
+typecheck:
+	mypy shapelyM/
+
+
 bumpversion-major:
 	bumpversion major
 
@@ -17,6 +24,12 @@ bumpversion-patch:
 
 build-wheel:
 	flit build
+
+
+
+
+
+
 
 
 # isort-src:
@@ -42,13 +55,6 @@ build-wheel:
 #
 # format-check: isort-src-check isort-docs-check isort-examples-check
 # 	black --check .
-#
-# lint:
-# 	flake8 ./pyImx ./tests
-#
-# typecheck:
-# 	mypy pyImx/
-#
 
 
 # check-all:

@@ -22,11 +22,9 @@ class MeasurePoint:
     def distance(self, point_geometry: MeasurePoint, force_2d: bool = False) -> float:
         if self.z is not None and point_geometry.z is not None and force_2d is not True:
             return math.sqrt(
-                math.pow(point_geometry.x - self.x, 2) +
-                math.pow(point_geometry.y - self.y, 2) +
-                math.pow(point_geometry.z - self.z, 2) * 1.0
+                math.pow(point_geometry.x - self.x, 2)
+                + math.pow(point_geometry.y - self.y, 2)
+                + math.pow(point_geometry.z - self.z, 2) * 1.0
             )
         else:
-            return math.sqrt(
-                (self.x - point_geometry.x) ** 2 + (self.y - point_geometry.y) ** 2
-            )
+            return math.sqrt((self.x - point_geometry.x) ** 2 + (self.y - point_geometry.y) ** 2)

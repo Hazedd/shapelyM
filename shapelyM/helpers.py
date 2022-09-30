@@ -6,10 +6,7 @@ from shapelyM.measurePoint import MeasurePoint
 
 
 def point_on_line(
-        a: MeasurePoint,
-        b: MeasurePoint,
-        p: MeasurePoint,
-        belong_to_segment=False
+    a: MeasurePoint, b: MeasurePoint, p: MeasurePoint, belong_to_segment=False
 ) -> np.array:
     """
     # todo: make sure:
@@ -47,11 +44,7 @@ def point_on_line(
         return a + t * ab
 
 
-def is_between(
-        a: MeasurePoint,
-        b: MeasurePoint,
-        c: MeasurePoint
-) -> bool:
+def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     """
     # todo: make sure it handles 3d.
 

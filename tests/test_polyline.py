@@ -1,7 +1,6 @@
-import pytest
-
 from random import randint
 
+import pytest
 from shapely.geometry import LineString
 from shapely.ops import linemerge
 
