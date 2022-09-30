@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from measurePoint import MeasurePoint
+from shapelyM.measurePoint import MeasurePoint
 
 
 def point_on_line(

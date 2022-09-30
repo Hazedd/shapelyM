@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from linear_reference import linear_reference_point_on_line
-from lineString import MeasurePoint
+from shapelyM.linear_reference import linear_reference_point_on_line
+from shapelyM.lineString import MeasurePoint
 
 from shapely.geometry import Point, LineString
 

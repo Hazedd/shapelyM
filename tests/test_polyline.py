@@ -5,7 +5,7 @@ from random import randint
 from shapely.geometry import LineString
 from shapely.ops import linemerge
 
-from lineString import LineStringMeasure, MeasurePoint
+from shapelyM.lineString import LineStringMeasure, MeasurePoint
 
 
 class TestSimplePolyline:

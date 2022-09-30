@@ -3,7 +3,8 @@ install:
 	pip install flit
 	flit install --deps develop
 
-
+test:
+	pytest --cov=pyImx/ --cov-report=term-missing --cov-fail-under=70
 
 # isort-src:
 # 	isort ./pyImx ./tests
@@ -35,10 +36,8 @@ install:
 # typecheck:
 # 	mypy pyImx/
 #
-# # todo: make sure in production covar is at least 100%
-# test:
-# 	pytest --cov=pyImx/ --cov-report=term-missing --cov-fail-under=70
-#
+
+
 # bumpversion-major:
 # 	bumpversion major
 #
