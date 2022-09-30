@@ -1,0 +1,116 @@
+[project]
+name = "pyImx"
+description = "python imx utilities"
+authors = [
+    { name = "Martijn Pentenga", email = "martijn.pentenga@movares.nl" },
+    { name = "Benjamin Smeding", email = "benjamin.smeding@movares.nl" },
+    { name = "Floris den Heijer", email = "floris.den.heijer@movares.nl" },
+]
+readme = "README.md"
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3 :: Only",
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "lxml",
+    "xmltodict",
+    "shapely",
+    "pyproj",
+    "numpy",
+    "get-set-nested-dict",
+]
+
+[project.optional-dependencies]
+
+diff = [
+    "deepdiff6",
+    "XlsxWriter",
+    "openpyxl",
+    "pandas",
+    "numpy==1.23.2"
+]
+
+jupyter = [
+    "jupyterlab"
+]
+
+dev = [
+    "flake8",
+    "flake8-black",
+    "flake8-docstrings",
+    "black",
+    "pytest",
+    "isort",
+    "mike",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocs-mermaid2-plugin",
+    "mkdocstrings[crystal, python]>=0.18",
+    "mypy",
+    "codecov",
+    "pytest-cov",
+    "pytest-mock",
+    "flit",
+    "markdown-include",
+    "pygments",
+    "pymdown-extensions",
+    "bumpversion",
+    "pre-commit",
+    "twine",
+    "keyring",
+    "artifacts-keyring",
+    "mkdocs-jupyter",
+] 
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<4"]
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --ignore=test_build.py"
+markers = [
+  "slow: Run tests that use sample data from file",
+  "serial"
+]
+testpaths = [
+    "tests"
+]
+
+[tool.flit.module]
+name = "pyImx"
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
