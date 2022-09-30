@@ -1,10 +1,8 @@
 [project]
-name = "pyImx"
-description = "python imx utilities"
+name = "shapelyM"
+description = "Linear referencing for shapley LineStrings"
 authors = [
-    { name = "Martijn Pentenga", email = "martijn.pentenga@movares.nl" },
-    { name = "Benjamin Smeding", email = "benjamin.smeding@movares.nl" },
-    { name = "Floris den Heijer", email = "floris.den.heijer@movares.nl" },
+    { name = "Martijn Pentenga", email = "h.pentenga@gmail.com" }
 ]
 readme = "README.md"
 dynamic = ["version"]
@@ -18,29 +16,14 @@ classifiers = [
 requires-python = ">=3.10"
 
 dependencies = [
-    "lxml",
-    "xmltodict",
     "shapely",
-    "pyproj",
-    "numpy",
-    "get-set-nested-dict",
+    "numpy"
 ]
 
 [project.optional-dependencies]
 
-diff = [
-    "deepdiff6",
-    "XlsxWriter",
-    "openpyxl",
-    "pandas",
-    "numpy==1.23.2"
-]
-
-jupyter = [
-    "jupyterlab"
-]
-
 dev = [
+    "pyautocad",
     "flake8",
     "flake8-black",
     "flake8-docstrings",
@@ -66,7 +49,7 @@ dev = [
     "keyring",
     "artifacts-keyring",
     "mkdocs-jupyter",
-] 
+]
 
 [build-system]
 build-backend = "flit_core.buildapi"
@@ -104,7 +87,7 @@ testpaths = [
 ]
 
 [tool.flit.module]
-name = "pyImx"
+name = "shapelyM"
 
 [tool.distutils.bdist_wheel]
 universal = true

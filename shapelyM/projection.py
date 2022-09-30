@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from debug.autocad import AutocadService
 from linear_reference import linear_reference_point_on_line
 from lineString import MeasurePoint
 
 from shapely.geometry import Point, LineString
 
-DEBUG = True
+DEBUG = False
 if DEBUG:
+    from debug.autocad import AutocadService
     acad = AutocadService()
 
 
