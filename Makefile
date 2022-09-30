@@ -6,6 +6,19 @@ install:
 test:
 	pytest --cov=pyImx/ --cov-report=term-missing --cov-fail-under=70
 
+bumpversion-major:
+	bumpversion major
+
+bumpversion-minor:
+	bumpversion minor
+
+bumpversion-patch:
+	bumpversion patch
+
+build-wheel:
+	flit build
+
+
 # isort-src:
 # 	isort ./pyImx ./tests
 #
@@ -37,19 +50,6 @@ test:
 # 	mypy pyImx/
 #
 
-
-# bumpversion-major:
-# 	bumpversion major
-#
-# bumpversion-minor:
-# 	bumpversion minor
-#
-# bumpversion-patch:
-# 	bumpversion patch
-#
-# build-wheel:
-# 	flit build
-#
 
 # check-all:
 # 	make test
