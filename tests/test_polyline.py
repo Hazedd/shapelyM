@@ -1,7 +1,7 @@
 from random import randint
 
 import pytest
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 from shapely.ops import linemerge
 
 from shapelyM.lineString import LineStringMeasure, MeasurePoint

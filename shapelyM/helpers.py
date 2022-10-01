@@ -8,7 +8,8 @@ from shapelyM.measurePoint import MeasurePoint
 def point_on_line(
     a: MeasurePoint, b: MeasurePoint, p: MeasurePoint, belong_to_segment=False
 ) -> np.array:
-    """
+    """Ettetet.
+
     # todo: make sure:
         - should handle shapely Points
         - handle Projection on 2d, then add height:
@@ -20,7 +21,6 @@ def point_on_line(
     :param belong_to_segment:
     :return:
     """
-
     if a.x == b.x and a.y == b.y:
         return np.array([a.x, a.y, a.z])
 
@@ -45,7 +45,8 @@ def point_on_line(
 
 
 def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
-    """
+    """A asdsdsd.
+
     # todo: make sure it handles 3d.
 
     :param a:

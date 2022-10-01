@@ -5,7 +5,7 @@ from shapelyM.lineString import MeasurePoint
 
 from shapely.geometry import Point, LineString
 
-DEBUG = False
+DEBUG = True
 if DEBUG:
     from debug.autocad import AutocadService
 
