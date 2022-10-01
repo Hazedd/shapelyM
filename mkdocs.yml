@@ -75,28 +75,3 @@ extra:
 
 nav:
   - About: about.md
-  - Used cases:
-      - Notebooks:
-        - Notebook page: notebooks/PI-demo-pyImx.ipynb
-        - Notebook page: notebooks/PI-demo-opleveringsklaar-maken.ipynb
-        - Notebook page: notebooks/PI-demo-integraties.ipynb
-  - Vision and Roadmap:
-    - Vision: vision.md
-    - Roadmap: roadmap.md
-  - Examples:
-    - examples/Imx-example.md
-    - examples/ImxBim-example.md
-    - examples/ImxDiff-example.md
-  - Reference:
-      - pyImx:
-        - Imx: pyImx/imx.md
-        - ImxDict: pyImx/imxDict.md
-        - ImxValueObjects: pyImx/valueObjects.md
-      - pyImxBim:
-          - ImxBim: pyImx/bim.md
-      - pyImxDiff:
-        - ImxDiff: pyImxDiff/imxDiff.md
-        - Diff operators: pyImxDiff/customOperators.md
-        # - ImxDiffReport: pyImxDiff/imxDiffReporter.md
-  - Get Involved: contribute.md
-  - Jupyter Lab: jupyter-lab.md
