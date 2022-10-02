@@ -1,4 +1,3 @@
-
 from pyautocad import Autocad, APoint
 from shapely.geometry import MultiLineString, LineString, Point
 from shapely.ops import linemerge, split
@@ -16,8 +15,11 @@ class AutocadUtilityService(object):
         self.acad.prompt(text)
 
     def _breakUp_autoCad_polyLine_coordinates(self, autoCadLineObject, numberOfCoordinates):
-        res = tuple(autoCadLineObject.Coordinates[n:n + numberOfCoordinates]
-                    for n, i in enumerate(autoCadLineObject.Coordinates) if n % numberOfCoordinates == 0)
+        res = tuple(
+            autoCadLineObject.Coordinates[n : n + numberOfCoordinates]
+            for n, i in enumerate(autoCadLineObject.Coordinates)
+            if n % numberOfCoordinates == 0
+        )
         return res
 
     def _get_shapely_from_cad_object(self, cad_object):
@@ -74,14 +76,13 @@ class AutocadUtilityService(object):
         for i, p in enumerate(coords):
             pd = line.project(Point(p))
             if pd == distance:
-                return [
-                    LineString(coords[:i + 1]),
-                    LineString(coords[i:])]
+                return [LineString(coords[: i + 1]), LineString(coords[i:])]
             if pd > distance:
                 cp = line.interpolate(distance)
                 return [
                     LineString(coords[:i] + [(cp.x, cp.y, cp.z)]),
-                    LineString([(cp.x, cp.y, cp.z)] + coords[i:])]
+                    LineString([(cp.x, cp.y, cp.z)] + coords[i:]),
+                ]
 
     def _get_multiLinestring_from_selection(self, selection):
         return MultiLineString(selection)
@@ -122,11 +123,9 @@ class AutocadService(object):
                 else:
                     self.Utilities._draw_polyline2D(linestring)
 
-
         # todo: not sure what to with a polygon in autocadService.....
         elif shapely_object.geom_type == "Polygon":
             raise NotImplementedError("Polygon")
-
 
         else:
             print(shapely_object.geom_type)
@@ -153,8 +152,13 @@ class AutocadService(object):
         if toDistance <= fromDistance:
             raise ValueError("toDistance less or equeal as fromDistance")
         LineToEnd = LineString(
-            [list(x.coords) for x in self.Utilities._profile_cutter(shapelyLineObject, toDistance)][0])
-        cutFrontAndEndPoint = [list(x.coords) for x in self.Utilities._profile_cutter(LineToEnd, fromDistance)]
+            [list(x.coords) for x in self.Utilities._profile_cutter(shapelyLineObject, toDistance)][
+                0
+            ]
+        )
+        cutFrontAndEndPoint = [
+            list(x.coords) for x in self.Utilities._profile_cutter(LineToEnd, fromDistance)
+        ]
         if len(cutFrontAndEndPoint) <= 1:
             cuttedLine = LineString(cutFrontAndEndPoint[0])
         else:
@@ -162,7 +166,9 @@ class AutocadService(object):
         return cuttedLine
 
     def DrawProfileOverLine(self, shapelyLineObject, fromDistance, toDistance):
-        cuttedLine = self.GetShapelyObjectCutLineAt2PointsOnLine(shapelyLineObject, fromDistance, toDistance)
+        cuttedLine = self.GetShapelyObjectCutLineAt2PointsOnLine(
+            shapelyLineObject, fromDistance, toDistance
+        )
         self.DrawShapelyObject(cuttedLine)
         return cuttedLine
 

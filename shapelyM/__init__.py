@@ -4,7 +4,7 @@ from typing import Any, List
 
 __version__ = "0.0.1"
 
-from shapelyM.measurePoint import MeasurePoint
-from shapelyM.lineString import LineStringMeasure
+from .measurePoint import MeasurePoint
+from .lineString import LineStringMeasure
 
 __all__: List[Any] = ["MeasurePoint", "LineStringMeasure"]

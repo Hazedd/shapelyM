@@ -1,10 +1,11 @@
 from random import randint
 
 import pytest
-from shapely.geometry import LineString, Point
+from shapely.geometry import LineString
 from shapely.ops import linemerge
 
-from shapelyM.lineString import LineStringMeasure, MeasurePoint
+from shapelyM.measurePoint import MeasurePoint
+from shapelyM.lineString import LineStringMeasure
 
 
 class TestSimplePolyline:
