@@ -12,6 +12,17 @@ lint:
 typecheck:
 	mypy shapelyM/
 
+format-check: isort-src-check isort-docs-check isort-examples-check
+	black --check .
+
+format: isort-src isort-docs isort-examples
+	black .
+
+isort-src-check:
+	isort --check-only ./shapelyM ./tests
+
+isort-src:
+	isort ./shapelyM ./tests
 
 bumpversion-major:
 	bumpversion major
@@ -25,40 +36,9 @@ bumpversion-patch:
 build-wheel:
 	flit build
 
-
-
-
-
-
-
-
-# isort-src:
-# 	isort ./pyImx ./tests
-#
-# isort-docs:
-# 	isort ./docs/src -o pyImxs
-#
-# isort-examples:
-# 	isort ./examples -o pyImx -p app
-#
-# format: isort-src isort-docs isort-examples
-# 	black .
-#
-# isort-src-check:
-# 	isort --check-only ./pyImx ./tests
-#
-# isort-docs-check:
-# 	isort --check-only ./docs/src -o pyImx
-#
-# isort-examples-check:
-# 	isort --check-only ./examples -o pyImx -p app
-#
-# format-check: isort-src-check isort-docs-check isort-examples-check
-# 	black --check .
-
-
-# check-all:
-# 	make test
-# 	make lint
-# 	make typecheck
-# 	mkdocs build
+check-all:
+	make test
+	make typecheck
+	make format
+	make lint
+	mkdocs build
