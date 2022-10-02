@@ -32,10 +32,9 @@ jobs:
       run: |
         make format-check
         make lint
-
-#     - name: Typecheck
-#       run: |
-#         make typecheck
+#    - name: Typecheck
+#      run: |
+#        make typecheck
     - name: Test with pytest
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

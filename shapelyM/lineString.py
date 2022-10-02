@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from shapely.geometry import LineString
 
@@ -14,17 +14,17 @@ class LineStringMeasure:
         self.shapely: LineString = LineString(coordinates)
         self._line_coordinates_raw: List[List[float]] = coordinates
         self.line_measure_points: List[MeasurePoint] = self._calculate_length(coordinates)
-        self.length_3d: float = self._get_length()
-        self.length_2d: float = self._get_length(force_2d=True)
+        self.length_3d: Optional[float] = self._get_length()
+        self.length_2d: Optional[float] = self._get_length(force_2d=True)
 
-    def _get_length(self, force_2d: bool = False) -> float:
+    def _get_length(self, force_2d: bool = False) -> Optional[float]:
         if force_2d:
             return self._calculate_length(self._line_coordinates_raw, force_2d=True)[-1].m
         return self.line_measure_points[-1].m
 
     @staticmethod
     def _calculate_length(coordinates, force_2d: bool = False) -> List[MeasurePoint]:
-        _length = 0
+        _length = 0.0
         response = []
         for idx, item in enumerate(coordinates):
             line_point = MeasurePoint(*item)
@@ -44,7 +44,7 @@ class LineStringMeasure:
             for idx, line_point in enumerate(self.line_measure_points)
         ]
         distance_idx.sort(key=lambda x: x[0])
-        idx = distance_idx[0][1]
+        idx = int(distance_idx[0][1])
 
         if distance_idx[0][0] == distance_idx[1][0]:
             l_p1 = self.line_measure_points[distance_idx[0][1]]
@@ -63,7 +63,7 @@ class LineStringMeasure:
                 next_point = self.line_measure_points[idx + 1]
 
             if not previous_point:
-                projected_on_line = point_on_line(closest_point, next_point, point)
+                projected_on_line = point_on_line(closest_point, self.line_measure_points[idx + 1], point)
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
                 if is_between(

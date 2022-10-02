@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 from enum import Enum
+from typing import cast
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -11,7 +12,7 @@ from shapelyM.measurePoint import MeasurePoint
 
 def point_on_line(
     a: MeasurePoint, b: MeasurePoint, p: MeasurePoint, belong_to_segment=False
-) -> np.array:
+) -> np.ndarray:
     """Ettetet.
 
     # todo: make sure:
@@ -29,24 +30,25 @@ def point_on_line(
         return np.array([a.x, a.y, a.z])
 
     if a.z is not None and b.z is not None and p.z is not None:
-        a = np.array([a.x, a.y, a.z])
-        b = np.array([b.x, b.y, b.z])
-        p = np.array([p.x, p.y, p.z])
+        a_ = np.array([a.x, a.y, a.z])
+        b_ = np.array([b.x, b.y, b.z])
+        p_ = np.array([p.x, p.y, p.z])
 
     else:
-        a = np.array([a.x, a.y])
-        b = np.array([b.x, b.y])
-        p = np.array([p.x, p.y])
+        a_ = np.array([a.x, a.y])
+        b_ = np.array([b.x, b.y])
+        p_ = np.array([p.x, p.y])
 
-    ap = p - a
-    ab = b - a
+    ap = p_ - a_
+    ab = b_ - a_
     if not belong_to_segment:
-        return a + np.dot(ap, ab) / np.dot(ab, ab) * ab
+        response = a_ + np.dot(ap, ab) / np.dot(ab, ab) * ab
+        return cast(np.ndarray, response)
     else:
         t = np.dot(ap, ab) / np.dot(ab, ab)
         t = max(0, min(1, t))
-        return a + t * ab
-
+        response = a_ + t * ab
+        return cast(np.ndarray, response)
 
 def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     """A asdsdsd.
