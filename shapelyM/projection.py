@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from shapely.geometry import Point, LineString
 
-from helpers import determinate_left_right_on_line
-from measurePoint import MeasurePoint
-from linear_reference import linear_reference_point_on_line
+from shapelyM.helpers import determinate_left_right_on_line
+from shapelyM.measurePoint import MeasurePoint
+from shapelyM.linear_reference import linear_reference_point_on_line
 
 
 DEBUG = False

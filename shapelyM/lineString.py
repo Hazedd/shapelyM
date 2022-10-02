@@ -4,9 +4,9 @@ from typing import List
 
 from shapely.geometry import LineString, Point
 
-from measurePoint import MeasurePoint
-from projection import LineProjection
-from helpers import point_on_line, is_between
+from shapelyM.measurePoint import MeasurePoint
+from shapelyM.projection import LineProjection
+from shapelyM.helpers import point_on_line, is_between
 
 
 class LineStringMeasure:

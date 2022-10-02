@@ -6,7 +6,7 @@ from enum import Enum
 
 from shapely.geometry import Point, LineString
 
-from measurePoint import MeasurePoint
+from shapelyM.measurePoint import MeasurePoint
 
 
 def point_on_line(
