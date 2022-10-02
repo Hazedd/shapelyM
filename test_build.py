@@ -2,7 +2,7 @@
 import sys
 
 try:
-    from shapelyM import LineStringMeasure
+    from shapelyM import *
 except:
     sys.exit(1)
 

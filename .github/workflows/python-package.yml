@@ -43,8 +43,8 @@ jobs:
       run: |
          pytest --cov=shapelyM/
          codecov
-    - name: Build and install it on system host
-      run: |
-        flit build --setup-py
-        flit install --deps none --python $(which python)
-        python test_build.py
+#    - name: Build and install it on system host
+#      run: |
+#        flit build --setup-py
+#        flit install --deps none --python $(which python)
+#        python test_build.py
