@@ -42,8 +42,8 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
          pytest
+         codecov
 #        pytest --cov=fastapi_users/
-        codecov
 #     - name: Build and install it on system host
 #       run: |
 #         flit build --setup-py
