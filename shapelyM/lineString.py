@@ -63,7 +63,9 @@ class LineStringMeasure:
                 next_point = self.line_measure_points[idx + 1]
 
             if not previous_point:
-                projected_on_line = point_on_line(closest_point, self.line_measure_points[idx + 1], point)
+                projected_on_line = point_on_line(
+                    closest_point, self.line_measure_points[idx + 1], point
+                )
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
                 if is_between(

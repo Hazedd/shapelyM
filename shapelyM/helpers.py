@@ -50,6 +50,7 @@ def point_on_line(
         response = a_ + t * ab
         return cast(np.ndarray, response)
 
+
 def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     """A asdsdsd.
 
