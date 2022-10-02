@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from shapelyM.linear_reference import linear_reference_point_on_line
-from shapelyM.lineString import MeasurePoint
-
 from shapely.geometry import Point, LineString
 
-DEBUG = True
+from helpers import determinate_left_right_on_line
+from measurePoint import MeasurePoint
+from linear_reference import linear_reference_point_on_line
+
+
+DEBUG = False
 if DEBUG:
     from debug.autocad import AutocadService
 
@@ -13,18 +15,33 @@ if DEBUG:
 
 
 class LineProjection:
-    def __init__(self, line_point_1, line_point_2, point, point_on_line_over_rule=None):
+    def __init__(
+            self,
+            line_point_1: Point, line_point_2: Point, point: Point,
+            point_on_line_over_rule: Point = None
+    ):
         self.point = point
         self.point_on_line = MeasurePoint(
             *linear_reference_point_on_line(line_point_1, line_point_2, point)
         )
         self.distance_to_line = self.point.distance(self.point_on_line)
-
+        self.distance_to_line_2d = self.point.distance(self.point_on_line, force_2d=True)
         if point_on_line_over_rule is not None:
             self.point_on_line = point_on_line_over_rule
             self.distance_along_line = point_on_line_over_rule.m
         else:
+            self.point_on_line = self.point_on_line
             self.distance_along_line = line_point_1.m + line_point_1.distance(self.point_on_line)
+
+        self.point_on_line.m = self.distance_along_line
+
+        self.side_of_line = determinate_left_right_on_line(
+            Point([self.point.x, self.point.y]), 180,
+            LineString([
+                [line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]
+            ])
+        ).value
+
 
         if DEBUG:
             if point.z is not None:
