@@ -2,12 +2,12 @@
 name = "shapelyM"
 description = "Linear referencing for shapley LineStrings"
 authors = [
-    { name = "Martijn Pentenga", email = "m.pentenga@gmail.com" }
+    { name = "Hazzed", email = "hazzed@shapleyM.com" }
 ]
 readme = "README.md"
 dynamic = ["version"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: End Users/Desktop",
     "Programming Language :: Python :: 3.10",
