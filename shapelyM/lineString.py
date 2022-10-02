@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from shapely.geometry import LineString, Point
+from shapely.geometry import LineString
 
 from shapelyM.helpers import is_between, point_on_line
 from shapelyM.measurePoint import MeasurePoint

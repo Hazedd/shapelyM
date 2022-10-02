@@ -3,7 +3,7 @@ import math
 
 from pyautocad import APoint, Autocad
 from shapely.geometry import LineString, MultiLineString, Point
-from shapely.ops import linemerge, split
+from shapely.ops import linemerge
 
 
 class AutocadUtilityService(object):

@@ -58,7 +58,6 @@ def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     :param c:
     :return:
     """
-
     cross_product = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
 
     # compare versus epsilon for floating point values, or != 0 if using integers
