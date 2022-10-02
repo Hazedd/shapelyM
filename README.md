@@ -1,4 +1,4 @@
-# shapely-linear-referencing-3D
+ShapelyM: linear referencing in 3D
 
 The term linear referencing emerged from engineering applications where it was preferable to locate a point along a linear feature (often roads) by referencing that location to some other well-defined location, rather than using classical geographic coordinate systems. The most familiar illustration of linear referencing is the mile markers along U.S. highways (Federal Highway Administration 2001, Federal Transit Administration 2003).
 
