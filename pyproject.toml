@@ -2,7 +2,7 @@
 name = "shapelyM"
 description = "Linear referencing for shapley LineStrings"
 authors = [
-    { name = "Martijn Pentenga", email = "h.pentenga@gmail.com" }
+    { name = "Martijn Pentenga", email = "m.pentenga@gmail.com" }
 ]
 readme = "README.md"
 dynamic = ["version"]
