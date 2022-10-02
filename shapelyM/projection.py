@@ -8,9 +8,8 @@ from linear_reference import linear_reference_point_on_line
 
 
 DEBUG = False
-if DEBUG:
+if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
-
     acad = AutocadService()
 
 
@@ -43,7 +42,7 @@ class LineProjection:
         ).value
 
 
-        if DEBUG:
+        if DEBUG:   # pragma: no cover
             if point.z is not None:
                 acad.DrawShapelyObject(Point(point.x, point.y, point.z))
             else:
