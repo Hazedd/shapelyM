@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from shapelyM.measurePoint import MeasurePoint
 from shapelyM.helpers import point_on_line
+from shapelyM.measurePoint import MeasurePoint
 
 
 def linear_reference_point_on_line(a: MeasurePoint, b: MeasurePoint, p: MeasurePoint):

@@ -12,10 +12,10 @@ lint:
 typecheck:
 	mypy shapelyM/
 
-format-check: isort-src-check isort-docs-check isort-examples-check
+format-check: isort-src-check
 	black --check .
 
-format: isort-src isort-docs isort-examples
+format: isort-src
 	black .
 
 isort-src-check:

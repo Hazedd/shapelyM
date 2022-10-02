@@ -1,8 +1,9 @@
-from pyautocad import Autocad, APoint
-from shapely.geometry import MultiLineString, LineString, Point
-from shapely.ops import linemerge, split
 import array
 import math
+
+from pyautocad import APoint, Autocad
+from shapely.geometry import LineString, MultiLineString, Point
+from shapely.ops import linemerge, split
 
 
 class AutocadUtilityService(object):

@@ -1,23 +1,25 @@
 from __future__ import annotations
 
-from shapely.geometry import Point, LineString
+from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import determinate_left_right_on_line
-from shapelyM.measurePoint import MeasurePoint
 from shapelyM.linear_reference import linear_reference_point_on_line
-
+from shapelyM.measurePoint import MeasurePoint
 
 DEBUG = False
 if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
+
     acad = AutocadService()
 
 
 class LineProjection:
     def __init__(
-            self,
-            line_point_1: Point, line_point_2: Point, point: Point,
-            point_on_line_over_rule: Point = None
+        self,
+        line_point_1: Point,
+        line_point_2: Point,
+        point: Point,
+        point_on_line_over_rule: Point = None,
     ):
         self.point = point
         self.point_on_line = MeasurePoint(
@@ -35,14 +37,12 @@ class LineProjection:
         self.point_on_line.m = self.distance_along_line
 
         self.side_of_line = determinate_left_right_on_line(
-            Point([self.point.x, self.point.y]), 180,
-            LineString([
-                [line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]
-            ])
+            Point([self.point.x, self.point.y]),
+            180,
+            LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]]),
         ).value
 
-
-        if DEBUG:   # pragma: no cover
+        if DEBUG:  # pragma: no cover
             if point.z is not None:
                 acad.DrawShapelyObject(Point(point.x, point.y, point.z))
             else:

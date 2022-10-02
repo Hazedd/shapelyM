@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import math
-import numpy as np
 from enum import Enum
 
-from shapely.geometry import Point, LineString
+import numpy as np
+from shapely.geometry import LineString, Point
 
 from shapelyM.measurePoint import MeasurePoint
 
