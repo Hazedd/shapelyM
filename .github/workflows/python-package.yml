@@ -41,11 +41,10 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-         pytest
+         pytest --cov=shapelyM/
          codecov
-#        pytest --cov=fastapi_users/
-#     - name: Build and install it on system host
-#       run: |
-#         flit build --setup-py
-#         flit install --deps none --python $(which python)
-#         python test_build.py
+    - name: Build and install it on system host
+      run: |
+        flit build --setup-py
+        flit install --deps none --python $(which python)
+        python test_build.py
