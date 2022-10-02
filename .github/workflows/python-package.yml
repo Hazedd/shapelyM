@@ -27,14 +27,23 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        pip install flit
+        flit install --deps develop --extras oauth,redis
+#     - name: Check codestyle
+#       run: |
+#         make format-check
+#         make lint
+#     - name: Typecheck
+#       run: |
+#         make typecheck
     - name: Test with pytest
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        pytest
+        pytest --cov=fastapi_users/
+        codecov
+#     - name: Build and install it on system host
+#       run: |
+#         flit build --setup-py
+#         flit install --deps none --python $(which python)
+#         python test_build.py
