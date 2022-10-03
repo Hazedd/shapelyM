@@ -2,7 +2,7 @@
 
 from typing import Any, List
 
-__version__ = "1.beta6"
+__version__ = "0.0.1.beta6"
 
 from shapelyM.lineString import LineStringMeasure
 from shapelyM.measurePoint import MeasurePoint
