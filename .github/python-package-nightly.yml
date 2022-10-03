@@ -6,26 +6,29 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         # Setup GitHub user token to the secrets in the repository
         token: ${{ secrets.AC_GITHUB_TOKEN }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: ${{ matrix.python-version }}
 
-#    - name: Setup Git
-#      run: |
-#        git config user.name "joaomcteixeira"
-#        git config user.email 'joaomcteixeira@users.noreply.github.com'
-#        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-#        git checkout "${GITHUB_REF:11}"
-#
-#
+    - name: Setup Git
+      run: |
+        git config user.name "Hazedd"
+        git config user.email 'Hazedd@users.noreply.github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+        git checkout "${GITHUB_REF:11}"
+
 ##    - name: Setup env variables
 ##      run: |
 ##        echo "SKIPBUMP=FALSE" >> $GITHUB_ENV
