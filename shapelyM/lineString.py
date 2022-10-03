@@ -121,5 +121,4 @@ class LineStringMeasure:
 
                 else:
                     # on vertices
-                    tester = LineProjection(closest_point, next_point, point)
-                    return tester
+                    return LineProjection(closest_point, next_point, point)
