@@ -17,6 +17,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Setup git
+      run: |
+        git config user.name "Hazedd"
+        git config user.email 'Hazedd@users.noreply.github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+        git checkout "${GITHUB_REF:11}"
+        
+    - name: Bump build version
+      env:
+        COMMIT_MSG: build bump
+      run: |
+        bumpversion build
+
+    - name: Commit version change to master
+      run: |
+        git push --follow-tags
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -40,24 +57,7 @@ jobs:
         flit build --setup-py
         flit install --deps none --python $(which python)
         python test_build.py
-          
-    - name: Setup git
-      run: |
-        git config user.name "Hazedd"
-        git config user.email 'Hazedd@users.noreply.github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        git checkout "${GITHUB_REF:11}"
-        
-    - name: Bump build version
-      env:
-        COMMIT_MSG: build bump
-      run: |
-        bumpversion build
-
-    - name: Commit version change to master
-      run: |
-        git push --follow-tags
-        
+    
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
