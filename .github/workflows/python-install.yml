@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  test-and-build:
+  python-install:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
