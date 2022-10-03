@@ -2,10 +2,13 @@ name: Reusable workflow example
 
 on:
   workflow_dispatch:
-
-
+  
 jobs:
-  install-python:
-    uses: ./.github/workflows/python-install.yml
-  test-package:
-    uses: ./.github/workflows/package-test.yml
+  install-test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install python and dependencies
+      uses: ./.github/workflows/python-install.yml
+    - name: Test package
+      uses: ./.github/workflows/package-test.yml  
