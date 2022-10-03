@@ -25,7 +25,7 @@ isort-src:
 	isort ./shapelyM ./tests
 
 bumpversion-build:
-    bump2version build
+    bumpversion build
 
 bumpversion-major:
 	bumpversion major
