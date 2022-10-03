@@ -48,6 +48,12 @@ class LineStringMeasure:
     def project(
         self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> LineProjection:
+        """..........
+
+        :param point:
+        :param azimuth:
+        :return:
+        """
         if isinstance(point, Point):
             point = MeasurePoint(*point.coords[0])
 

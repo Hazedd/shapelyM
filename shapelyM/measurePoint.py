@@ -8,6 +8,13 @@ from shapely.geometry import Point
 
 class MeasurePoint:
     def __init__(self, x: float, y: float, z: float = None, m: float = None):
+        """........
+
+        :param x:
+        :param y:
+        :param z:
+        :param m:
+        """
         self.x = float(x)
         self.y = float(y)
         self.z = z

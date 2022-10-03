@@ -4,7 +4,11 @@ from shapelyM.helpers import point_on_line
 from shapelyM.measurePoint import MeasurePoint
 
 
-def linear_reference_point_on_line(a: MeasurePoint, b: MeasurePoint, p: MeasurePoint):
+def linear_reference_point_on_line(
+    a: MeasurePoint,
+    b: MeasurePoint,
+    p: MeasurePoint
+):
     if a.z is not None and b.z is not None and p.z is not None:
         point_on_line_2d = point_on_line(
             MeasurePoint(a.x, a.y), MeasurePoint(b.x, b.y), MeasurePoint(p.x, p.y)

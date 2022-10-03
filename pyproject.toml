@@ -23,27 +23,19 @@ dependencies = [
 [project.optional-dependencies]
 
 dev = [
-    "pyautocad",
+    "flit",
     "flake8",
     "flake8-black",
     "flake8-docstrings",
     "black",
     "pytest",
     "isort",
-    "mike",
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocs-mermaid2-plugin",
-    "mkdocstrings[crystal, python]>=0.18",
     "mypy",
     "codecov",
     "pytest-cov",
     "pytest-mock",
-    "flit",
-    "markdown-include",
-    "pygments",
-    "pymdown-extensions",
     "bumpversion",
+    "pyautocad",
 ]
 
 [build-system]
@@ -54,7 +46,7 @@ requires = ["flit_core >=3.2,<4"]
 profile = "black"
 
 [tool.black]
-line-length = 100
+line-length = 110
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -74,7 +66,7 @@ exclude = '''
 minversion = "6.0"
 addopts = "-ra -q --strict-markers --ignore=test_build.py"
 markers = [
-  "slow: Run tests that use sample data from file",
+  "slow: Run tests that run slowly",
   "serial"
 ]
 testpaths = [
