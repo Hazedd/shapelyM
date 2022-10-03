@@ -1,5 +1,5 @@
-name: Python package test
-
+name: Python package test and build
+ 
 on:
   workflow_call:
   push:
