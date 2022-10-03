@@ -1,3 +1,4 @@
+name: Do things every 1 minutes
 on:
   schedule:
     - cron: '*/5 * * * *'
