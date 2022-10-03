@@ -39,6 +39,7 @@ jobs:
     - name: Typecheck
       run: |
         make typecheck
+      continue-on-error: true
 
     - name: Test with pytest
       env:
