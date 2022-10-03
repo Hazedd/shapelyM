@@ -16,7 +16,9 @@ jobs:
         python-version: ["3.10"]
 
     steps:
-    - uses: actions/checkout@v3
+    
+    - name: Check out
+      uses: actions/checkout@v3
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -37,7 +39,6 @@ jobs:
     - name: Typecheck
       run: |
         make typecheck
-      continue-on-error: true
 
     - name: Test with pytest
       env:
