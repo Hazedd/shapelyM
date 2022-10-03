@@ -28,7 +28,6 @@ class LineStringMeasure:
         response = []
         for idx, item in enumerate(coordinates):
             line_point = MeasurePoint(*item)
-
             if idx != 0:
                 line_point_min_1 = MeasurePoint(*coordinates[idx - 1])
                 if force_2d:
@@ -50,7 +49,7 @@ class LineStringMeasure:
         self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> LineProjection:
         if isinstance(point, Point):
-            point = MeasurePoint(*point.coords)
+            point = MeasurePoint(*point.coords[0])
 
         distance_idx = self._get_distance_idx_dict(point)
         idx = int(distance_idx[0][1])

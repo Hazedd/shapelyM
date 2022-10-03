@@ -1,7 +1,7 @@
 from random import randint
 
 import pytest
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 from shapely.ops import linemerge
 
 from shapelyM.lineString import LineStringMeasure
@@ -253,5 +253,5 @@ class TestComplexPolyline:
         ],
     )
     def test_rail_connection_75t_measures(self, rail_connection_75t_line, points):
-        tester = rail_connection_75t_line[0].project(MeasurePoint(points[0], points[1], points[2]))
+        tester = rail_connection_75t_line[0].project(Point(points[0], points[1], points[2]))
         assert round(tester.distance_along_line, 3) == points[3]

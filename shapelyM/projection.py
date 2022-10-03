@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional
+from dataclasses import dataclass
 
 from shapely.geometry import LineString, Point
 
@@ -21,7 +22,7 @@ class LineProjection:
         line_point_1: Point,
         line_point_2: Point,
         point: Point,
-        point_on_line_over_rule: Point = None,
+        point_on_line_over_rule: Optional[Point] = None,
         azimuth: Optional[float] = None,
     ):
         self.point = point
