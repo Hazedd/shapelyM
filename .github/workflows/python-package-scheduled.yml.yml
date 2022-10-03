@@ -40,7 +40,10 @@ jobs:
     # Default action
     - name: Bump build version
       env:
-        COMMIT_MSG: ${{ github.event.head_commit.message }}
+        COMMIT_MSG: build bump
       run: |
         bumpversion build
 
+    - name: Commit version change to master
+      run: |
+        git push --follow-tags
