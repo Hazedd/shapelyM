@@ -1,5 +1,6 @@
 name: Do things every 5 minutes
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/5 * * * *'
 
