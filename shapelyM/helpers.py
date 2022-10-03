@@ -78,6 +78,11 @@ def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     return True
 
 
+def get_azimuth_from_points(point1: Point, point2: Point) -> float:
+    angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
+    return float(np.degrees(angle)) if angle >= 0 else float(np.degrees(angle) + 360)
+
+
 class LeftRightOnLineEnum(str, Enum):
     left = "Left"
     right = "Right"
@@ -87,7 +92,7 @@ class LeftRightOnLineEnum(str, Enum):
 def determinate_left_right_on_line(
     object_location: Point,
     azimuth: float,
-    line__geometry: LineString,
+    line_geometry: LineString,
     margin: float = 0.2,
 ) -> LeftRightOnLineEnum:
     """Get point left or right from a given line and rotation.
@@ -106,11 +111,11 @@ def determinate_left_right_on_line(
         object_location.y + projection_length * math.sin(angle_rad),
     )
 
-    object_measure = line__geometry.project(object_location)
-    projected_measure = line__geometry.project(end_point_projected_on_azimuth)
+    object_measure = line_geometry.project(object_location)
+    projected_measure = line_geometry.project(end_point_projected_on_azimuth)
 
-    object_point_on_line = line__geometry.interpolate(object_measure)
-    projected_point_on_line = line__geometry.interpolate(projected_measure)
+    object_point_on_line = line_geometry.interpolate(object_measure)
+    projected_point_on_line = line_geometry.interpolate(projected_measure)
 
     _value = np.sign(
         (object_point_on_line.x - projected_point_on_line.x)
@@ -119,13 +124,13 @@ def determinate_left_right_on_line(
         * (object_location.x - projected_point_on_line.x)
     )
 
-    distance = object_location.distance(line__geometry)
+    distance = object_location.distance(line_geometry)
 
     if distance < margin or _value == 0:
         return LeftRightOnLineEnum.on_vector
-    elif _value > 0:
-        return LeftRightOnLineEnum.left
     elif _value < 0:
+        return LeftRightOnLineEnum.left
+    elif _value > 0:
         return LeftRightOnLineEnum.right
 
     raise ValueError

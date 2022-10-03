@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Dict, Optional, Any
 
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import is_between, point_on_line
 from shapelyM.measurePoint import MeasurePoint
@@ -38,12 +38,21 @@ class LineStringMeasure:
             response.append(MeasurePoint(*line_point.coordinate_list(), m=_length))
         return response
 
-    def project(self, point: MeasurePoint) -> LineProjection:
+    def _get_distance_idx_dict(self, point: MeasurePoint) -> Dict[str, List[Any]]:
         distance_idx = [
             [point.distance(line_point, force_2d=True), idx, line_point]
             for idx, line_point in enumerate(self.line_measure_points)
         ]
         distance_idx.sort(key=lambda x: x[0])
+        return distance_idx
+
+    def project(
+            self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
+    ) -> LineProjection:
+        if isinstance(point, Point):
+            point = MeasurePoint(*point.coords)
+
+        distance_idx = self._get_distance_idx_dict(point)
         idx = int(distance_idx[0][1])
 
         if distance_idx[0][0] == distance_idx[1][0]:
@@ -102,7 +111,7 @@ class LineStringMeasure:
                     return LineProjection(previous_point, closest_point, point)
 
                 elif on_next and not on_previous:
-                    return LineProjection(closest_point, next_projected_point, point)
+                    return LineProjection(closest_point, next_point, point)
 
                 else:
                     # on both should be closest and next

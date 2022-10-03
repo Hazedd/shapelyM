@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from shapely.geometry import LineString, Point
 
-from shapelyM.helpers import determinate_left_right_on_line
+from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_points
 from shapelyM.linear_reference import linear_reference_point_on_line
 from shapelyM.measurePoint import MeasurePoint
 
@@ -20,6 +22,7 @@ class LineProjection:
         line_point_2: Point,
         point: Point,
         point_on_line_over_rule: Point = None,
+        azimuth: Optional[float] = None
     ):
         self.point = point
         self.point_on_line = MeasurePoint(
@@ -36,9 +39,12 @@ class LineProjection:
 
         self.point_on_line.m = self.distance_along_line
 
+        if not azimuth:
+            azimuth = get_azimuth_from_points(line_point_1, line_point_2)
+
         self.side_of_line = determinate_left_right_on_line(
             Point([self.point.x, self.point.y]),
-            180,
+            azimuth,
             LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]]),
         ).value
 
@@ -47,6 +53,7 @@ class LineProjection:
                 acad.DrawShapelyObject(Point(point.x, point.y, point.z))
             else:
                 acad.DrawShapelyObject(Point(point.x, point.y))
+            acad.DrawText(f"{self.side_of_line}", Point(point.x, point.y))
             if line_point_1.z is not None and line_point_2.z is not None:
                 acad.DrawShapelyObject(
                     LineString(
