@@ -1,9 +1,9 @@
-name: Do things every 5 minutes
+name: Nightly build on master
 on:
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '*/5 * * * *'
+    - cron:  '21 0 * * *'
     
 jobs:
   bump-version:
@@ -21,13 +21,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-        
-    - name: Setup git
-      run: |
-        git config user.name "Hazedd"
-        git config user.email 'Hazedd@users.noreply.github.com'
-        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        git checkout "${GITHUB_REF:11}"
     
     - name: Install dependencies
       run: |
@@ -47,6 +40,13 @@ jobs:
         flit build --setup-py
         flit install --deps none --python $(which python)
         python test_build.py
+          
+    - name: Setup git
+      run: |
+        git config user.name "Hazedd"
+        git config user.email 'Hazedd@users.noreply.github.com'
+        git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+        git checkout "${GITHUB_REF:11}"
         
     - name: Bump build version
       env:
