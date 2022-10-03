@@ -6,6 +6,9 @@ on:
     - cron:  '21 0 * * *'
     
 jobs:
+  pyhton-package-test:
+    uses: ./.github/workflows/python-package-test.yml
+    
   bump-version:
     runs-on: ubuntu-latest
     strategy:
@@ -45,18 +48,18 @@ jobs:
       run: |
         git push --follow-tags
     
-    - name: Test with pytest
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: |
-         pytest --cov=shapelyM/
-         codecov
+#     - name: Test with pytest
+#       env:
+#         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+#       run: |
+#          pytest --cov=shapelyM/
+#          codecov
          
-    - name: Build and install it on system host
-      run: |
-        flit build --setup-py
-        flit install --deps none --python $(which python)
-        python test_build.py
+#     - name: Build and install it on system host
+#       run: |
+#         flit build --setup-py
+#         flit install --deps none --python $(which python)
+#         python test_build.py
     
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
