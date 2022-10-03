@@ -1,4 +1,4 @@
-ShapelyM: linear referencing in 3D
+# ShapelyM, linear referencing in 3D
 
 The term linear referencing emerged from engineering applications where it was preferable to locate a point along a linear feature (often roads) by referencing that location to some other well-defined location, rather than using classical geographic coordinate systems. The most familiar illustration of linear referencing is the mile markers along U.S. highways (Federal Highway Administration 2001, Federal Transit Administration 2003).
 
@@ -30,6 +30,19 @@ returns:
  ```
 
 # Contribute
+Feel free to do some black math magic, add test or make suggestions.
+
+## Roadmap:
+- [X] make prototype work
+- [X] bumpversion including release type
+- [X] pipeline | make : black
+- [X] pipeline | make : type checking
+- [X] pipeline | deploy on pypi by GH A
+- [ ] implement "point on side of line"
+- [ ] version 0.1.0
+- [ ] make it work without shapely but easy to use
+- [ ] ....
+- [ ] version 1.0.0
 
 ## Requirements 
 New python project uses pyproject.toml to manage requerments and can be build by a newer build backend. 
