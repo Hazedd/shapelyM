@@ -9,7 +9,6 @@ from shapelyM.measurePoint import MeasurePoint
 
 
 class TestSimplePolyline:
-
     random_values_to_test = 10
 
     @pytest.fixture
@@ -255,3 +254,5 @@ class TestComplexPolyline:
     def test_rail_connection_75t_measures(self, rail_connection_75t_line, points):
         tester = rail_connection_75t_line[0].project(Point(points[0], points[1], points[2]))
         assert round(tester.distance_along_line, 3) == points[3]
+
+    # TODO: add side of line test!
