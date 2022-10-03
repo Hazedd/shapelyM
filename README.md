@@ -20,15 +20,27 @@ projection = line_measure.project(Point(0, 5, 0))
 returns:
 
 ```
-{'point': MeasurePoint, 
- 'point_on_line': MeasurePoint, 
- 'distance_to_line': 5.830951894845301, 
- 'distance_to_line_2d': 3.0, 
- 'distance_along_line': 7.0710678118654755, 
- 'side_of_line': 'Left'
- }
+{
+    'point': MeasurePoint, 
+    'point_on_line': MeasurePoint, 
+    'distance_to_line': 5.830951894845301, 
+    'distance_to_line_2d': 3.0, 
+    'distance_along_line': 7.0710678118654755, 
+    'side_of_line': 'Left'
+}
  ```
 
+MeasurePoint:
+
+```
+{
+    'x': 3.0,
+    'y': 5.0,
+    'z': 5.0,
+    'm': None,
+    'shapely': shapely.geometry.point.Point
+}
+```
 # Contribute
 Feel free to do some black math magic, add test or make suggestions.
 
@@ -38,11 +50,14 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] pipeline | make : black
 - [X] pipeline | make : type checking
 - [X] pipeline | deploy on pypi by GH A
+- [X] version 0.1.0-alpha
 - [ ] implement "point on side of line"
-- [ ] 100% test coverage
-- [ ] version 0.1.0
-- [ ] make it work without shapely but easy to use
+- [ ] version 0.1.0-beta
+- [ ] refactors
+- [ ] version 0.2.0-alpha 
+- [ ] make it work without shapely but easy to use with shapely
 - [ ] ....
+- [ ] 100% test coverage
 - [ ] version 1.0.0
 
 ## Requirements 
