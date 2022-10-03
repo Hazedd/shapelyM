@@ -24,8 +24,8 @@ isort-src-check:
 isort-src:
 	isort ./shapelyM ./tests
 
-bumpversion-build:
-    bumpversion build
+bumpversion-release:
+	bumpversion release
 
 bumpversion-major:
 	bumpversion major
@@ -36,8 +36,8 @@ bumpversion-minor:
 bumpversion-patch:
 	bumpversion patch
 
-bumpversion-release:
-	bumpversion release
+bumpversion-build:
+	bumpversion build
 
 build-wheel:
 	flit build
