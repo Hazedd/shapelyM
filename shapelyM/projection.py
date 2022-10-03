@@ -22,7 +22,7 @@ class LineProjection:
         line_point_2: Point,
         point: Point,
         point_on_line_over_rule: Point = None,
-        azimuth: Optional[float] = None
+        azimuth: Optional[float] = None,
     ):
         self.point = point
         self.point_on_line = MeasurePoint(

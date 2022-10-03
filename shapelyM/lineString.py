@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Dict, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from shapely.geometry import LineString, Point
 
@@ -47,7 +47,7 @@ class LineStringMeasure:
         return distance_idx
 
     def project(
-            self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
+        self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> LineProjection:
         if isinstance(point, Point):
             point = MeasurePoint(*point.coords)
