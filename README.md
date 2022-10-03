@@ -39,6 +39,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] pipeline | make : type checking
 - [X] pipeline | deploy on pypi by GH A
 - [ ] implement "point on side of line"
+- [ ] 100% test coverage
 - [ ] version 0.1.0
 - [ ] make it work without shapely but easy to use
 - [ ] ....
