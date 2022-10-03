@@ -34,9 +34,10 @@ jobs:
         make format-check
         make lint
         
-#    - name: Typecheck
-#      run: |
-#        make typecheck
+    - name: Typecheck
+      run: |
+        make typecheck
+      continue-on-error: true
 
     - name: Test with pytest
       env:
