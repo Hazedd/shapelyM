@@ -4,7 +4,7 @@ The term linear referencing emerged from engineering applications where it was p
 
 Shapely is a BSD-licensed Python package for manipulation and analysis of planar geometric objects. It is based on the widely deployed GEOS (the engine of PostGIS) and JTS (from which GEOS is ported) libraries. It can be useful to specify position along linear features such as LineStrings and MultiLineStrings with a **1-dimensional** referencing system. Shapely supports linear referencing based on length or distance, evaluating the distance along a geometric object to the projection of a given point, or the point at a given distance along the object.
 
-ShapelyM can be used to linear referencing in 3D.
+ShapelyM can be used to linear referencing in 3D and is designed to work (without) shapely.
 
 ## Way of working
 1. project (3d) point on on 2d polyline (representation of a 3d polyline)
@@ -12,7 +12,7 @@ ShapelyM can be used to linear referencing in 3D.
 3. get height on polyline
 4. get side of line (by azimuth) 
 
-### result
+### Visual
 ![alt text](https://raw.githubusercontent.com/Hazedd/shapelyM/master/assets/3d_view.png)
 
 ## Usage:
@@ -25,7 +25,7 @@ line_measure = LineStringMeasure([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]]
 projection = line_measure.project(Point(0, 5, 0))
 ```
 
-### returns:
+### Returns:
 
 ```
 {
@@ -45,7 +45,7 @@ projection = line_measure.project(Point(0, 5, 0))
     'x': 3.0,
     'y': 5.0,
     'z': 5.0,
-    'm': None,
+    'm': 7.0710678118654755,
     'shapely': shapely.geometry.point.Point
 }
 ```
@@ -62,7 +62,8 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] version 0.1.0-alpha
 - [ ] implement "point on side of line"
 - [ ] version 0.1.0-beta
-- [ ] refactors
+- [ ] implement LineStringMeasure from shapely Linestring
+- [ ] refactor
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
 - [ ] ....
