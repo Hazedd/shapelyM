@@ -1,0 +1,11 @@
+name: Reusable workflow example
+
+on:
+  workflow_call:
+
+
+jobs:
+  install-python:
+    uses: ./.github/workflows/python-install.yml
+  test-package:
+    uses: ./.github/workflows/package-test.yml
