@@ -11,7 +11,6 @@ from shapelyM.measurePoint import MeasurePoint
 DEBUG = False
 if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
-
     acad = AutocadService()
 
 
@@ -24,6 +23,15 @@ class LineProjection:
         point_on_line_over_rule: Optional[Point] = None,
         azimuth: Optional[float] = None,
     ):
+        """
+        TODO: make factory for dataclass!
+
+        :param line_point_1:
+        :param line_point_2:
+        :param point:
+        :param point_on_line_over_rule:
+        :param azimuth:
+        """
         self.point = point
         self.point_on_line = MeasurePoint(
             *linear_reference_point_on_line(line_point_1, line_point_2, point)

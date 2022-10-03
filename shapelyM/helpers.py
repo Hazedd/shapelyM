@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from enum import Enum
-from typing import cast
+from typing import Union, cast
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -11,14 +11,12 @@ from shapelyM.measurePoint import MeasurePoint
 
 
 def point_on_line(
-    a: MeasurePoint, b: MeasurePoint, p: MeasurePoint, belong_to_segment=False
+    a: Union[MeasurePoint, Point],
+    b: Union[MeasurePoint, Point],
+    p: Union[MeasurePoint, Point],
+    belong_to_segment: bool = False
 ) -> np.ndarray:
-    """Ettetet.
-
-    # todo: make sure:
-        - should handle shapely Points
-        - handle Projection on 2d, then add height:
-          solution in linear_reference_point_on_line is ugly ... it woks
+    """......
 
     :param a:
     :param b:
@@ -52,7 +50,7 @@ def point_on_line(
 
 
 def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
-    """A asdsdsd.
+    """.....
 
     # todo: make sure it handles 3d.
 
@@ -78,15 +76,26 @@ def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     return True
 
 
-def get_azimuth_from_points(point1: Point, point2: Point) -> float:
+def get_azimuth_from_points(
+    point1: Point,
+    point2: Point
+) -> float:
+    """
+    .........
+
+    :param point1:
+    :param point2:
+    :return:
+    """
     angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
     return float(np.degrees(angle)) if angle >= 0 else float(np.degrees(angle) + 360)
 
 
 class LeftRightOnLineEnum(str, Enum):
+    """......"""
     left = "Left"
     right = "Right"
-    on_vector = "On vector"
+    on_vector = "On"
 
 
 def determinate_left_right_on_line(
@@ -97,7 +106,11 @@ def determinate_left_right_on_line(
 ) -> LeftRightOnLineEnum:
     """Get point left or right from a given line and rotation.
 
-    TODO: add test make docstrings
+    :param object_location:
+    :param azimuth:
+    :param line_geometry:
+    :param margin:
+    :return:
     """
     projection_length = 1
 
