@@ -1,14 +1,11 @@
-name: build bump and deploy nightly
+name: Publish to PyPI.org
 on:
   schedule:
-    cron: '30 * * * *'
-    branches: ["master"]
-
+    cron: '40 * * * *'
+    branches: [ "master" ]
 jobs:
   bump-version:
-
     runs-on: ubuntu-latest
-    if: "!startsWith(github.event.head_commit.message, '[SKIP]')"
 
     steps:
     - uses: actions/checkout@v2
