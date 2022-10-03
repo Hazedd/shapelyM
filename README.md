@@ -6,6 +6,14 @@ Shapely is a BSD-licensed Python package for manipulation and analysis of planar
 
 ShapelyM can be used to linear referencing in 3D.
 
+## Way of working
+1. project (3d) point on on 2d polyline (representation of a 3d polyline)
+2. get measure
+3. get height on polyline
+4. get side of line (by azimuth) 
+
+### result
+![alt text](https://raw.githubusercontent.com/Hazedd/shapelyM/master/assets/3d_view.png)
 
 ## Usage:
 ```python
@@ -17,7 +25,7 @@ line_measure = LineStringMeasure([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]]
 projection = line_measure.project(Point(0, 5, 0))
 ```
 
-returns:
+### returns:
 
 ```
 {
@@ -30,7 +38,7 @@ returns:
 }
  ```
 
-MeasurePoint:
+#### MeasurePoint:
 
 ```
 {
@@ -41,6 +49,7 @@ MeasurePoint:
     'shapely': shapely.geometry.point.Point
 }
 ```
+
 # Contribute
 Feel free to do some black math magic, add test or make suggestions.
 
@@ -84,7 +93,7 @@ We use flit as a build-backend and for managing (optional) dependencies.
 ## Testing
 Make an effort to test each bit of functionality you add. Try to keep it simple.
 
-### Links
+# Links
 - [make](https://www.gnu.org/software/make/manual/make.html)
 - [flake8](https://flake8.pycqa.org/en/latest/)
 - [black](https://github.com/psf/black)
