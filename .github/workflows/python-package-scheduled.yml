@@ -1,0 +1,68 @@
+name: Nightly build on master
+on:
+  workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '21 0 * * *'
+    
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Setup and test package
+      uses: ./.github/workflows/python-package-test.yml@master
+      
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v3
+#       with:
+#         python-version: ${{ matrix.python-version }}
+    
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install flit
+#         flit install --deps develop
+        
+#     - name: Setup git
+#       run: |
+#         git config user.name "Hazedd"
+#         git config user.email 'Hazedd@users.noreply.github.com'
+#         git remote set-url origin https://x-access-token:${{ secrets.AC_GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+#         git checkout "${GITHUB_REF:11}"
+        
+#     - name: Bump build version
+#       env:
+#         COMMIT_MSG: build bump
+#       run: |
+#         bumpversion build
+
+#     - name: Commit version change to master
+#       run: |
+#         git push --follow-tags
+    
+#     - name: Test with pytest
+#       env:
+#         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+#       run: |
+#          pytest --cov=shapelyM/
+#          codecov
+         
+#     - name: Build and install it on system host
+#       run: |
+#         flit build --setup-py
+#         flit install --deps none --python $(which python)
+#         python test_build.py
+    
+#     - name: Publish package
+#       uses: pypa/gh-action-pypi-publish@release/v1
+#       with:
+#         password: ${{ secrets.PYPI_API_TOKEN }}
