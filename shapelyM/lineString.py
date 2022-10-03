@@ -57,6 +57,7 @@ class LineStringMeasure:
         if distance_idx[0][0] == distance_idx[1][0]:
             l_p1 = self.line_measure_points[distance_idx[0][1]]
             l_p2 = self.line_measure_points[distance_idx[1][1]]
+            # point exactly in the middle of the line
             return LineProjection(l_p1, l_p2, point)
 
         else:
@@ -76,6 +77,7 @@ class LineStringMeasure:
                 )
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
+                # on first part of the line
                 if is_between(
                     self.line_measure_points[0],
                     self.line_measure_points[1],
@@ -83,6 +85,7 @@ class LineStringMeasure:
                 ):
                     return LineProjection(closest_point, next_point, point)
 
+                # point in front of the line: undershoot
                 return LineProjection(
                     self.line_measure_points[0],
                     self.line_measure_points[1],
@@ -91,6 +94,7 @@ class LineStringMeasure:
                 )
 
             elif not next_point:
+                # point after the line: overshoot
                 return LineProjection(
                     previous_point,
                     closest_point,
@@ -99,6 +103,7 @@ class LineStringMeasure:
                 )
 
             else:
+                # somewhere on the line
                 projected_on_line = point_on_line(previous_point, closest_point, point)
                 projected_on_line_point = MeasurePoint(*projected_on_line)
                 on_previous = is_between(previous_point, closest_point, projected_on_line_point)
@@ -107,11 +112,14 @@ class LineStringMeasure:
                 on_next = is_between(closest_point, next_point, next_projected_point)
 
                 if on_previous and not on_next:
+                    # on segment before the closest point
                     return LineProjection(previous_point, closest_point, point)
 
                 elif on_next and not on_previous:
+                    # on segment after the closest point
                     return LineProjection(closest_point, next_point, point)
 
                 else:
-                    # on both should be closest and next
-                    return LineProjection(closest_point, next_point, point)
+                    # on vertices
+                    tester = LineProjection(closest_point, next_point, point)
+                    return tester
