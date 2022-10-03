@@ -1,4 +1,4 @@
-name: Nightly build on master
+name: (Nightly) build on master
 on:
   workflow_dispatch:
   schedule:
