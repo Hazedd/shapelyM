@@ -60,8 +60,8 @@ We use:
 - flake8 and black for linting, manual by `make lint` in a console.
 - myPy for typechecking, manual by `make typecheck` in a console.
 - black and isort, manual by `make format` in a console.
-- we use bumpversion for changing the version
-- We can use pyAutocad for debug visualizing
+- bumpversion for changing the version
+- pyAutocad for debug visualizing
 
 We use flit as a build-backend and for managing (optional) dependencies.
 
