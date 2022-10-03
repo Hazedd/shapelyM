@@ -1,7 +1,7 @@
 name: build bump and deploy nightly
 on:
   schedule:
-    cron: '* 28 * * *'
+    cron: '30 * * * *'
     branches: ["master"]
 
 jobs:
