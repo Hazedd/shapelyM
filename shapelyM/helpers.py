@@ -14,7 +14,7 @@ def point_on_line(
     a: Union[MeasurePoint, Point],
     b: Union[MeasurePoint, Point],
     p: Union[MeasurePoint, Point],
-    belong_to_segment: bool = False
+    belong_to_segment: bool = False,
 ) -> np.ndarray:
     """......
 
@@ -76,10 +76,7 @@ def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
     return True
 
 
-def get_azimuth_from_points(
-    point1: Point,
-    point2: Point
-) -> float:
+def get_azimuth_from_points(point1: Point, point2: Point) -> float:
     """
     .........
 
@@ -93,6 +90,7 @@ def get_azimuth_from_points(
 
 class LeftRightOnLineEnum(str, Enum):
     """......"""
+
     left = "Left"
     right = "Right"
     on_vector = "On"
@@ -131,8 +129,7 @@ def determinate_left_right_on_line(
     projected_point_on_line = line_geometry.interpolate(projected_measure)
 
     _value = np.sign(
-        (object_point_on_line.x - projected_point_on_line.x)
-        * (object_location.y - projected_point_on_line.y)
+        (object_point_on_line.x - projected_point_on_line.x) * (object_location.y - projected_point_on_line.y)
         - (object_point_on_line.y - projected_point_on_line.y)
         * (object_location.x - projected_point_on_line.x)
     )

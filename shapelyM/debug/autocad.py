@@ -153,9 +153,7 @@ class AutocadService(object):
         if toDistance <= fromDistance:
             raise ValueError("toDistance less or equeal as fromDistance")
         LineToEnd = LineString(
-            [list(x.coords) for x in self.Utilities._profile_cutter(shapelyLineObject, toDistance)][
-                0
-            ]
+            [list(x.coords) for x in self.Utilities._profile_cutter(shapelyLineObject, toDistance)][0]
         )
         cutFrontAndEndPoint = [
             list(x.coords) for x in self.Utilities._profile_cutter(LineToEnd, fromDistance)
@@ -167,9 +165,7 @@ class AutocadService(object):
         return cuttedLine
 
     def DrawProfileOverLine(self, shapelyLineObject, fromDistance, toDistance):
-        cuttedLine = self.GetShapelyObjectCutLineAt2PointsOnLine(
-            shapelyLineObject, fromDistance, toDistance
-        )
+        cuttedLine = self.GetShapelyObjectCutLineAt2PointsOnLine(shapelyLineObject, fromDistance, toDistance)
         self.DrawShapelyObject(cuttedLine)
         return cuttedLine
 

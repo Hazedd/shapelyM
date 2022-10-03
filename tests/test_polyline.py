@@ -117,10 +117,7 @@ class TestSimplePolyline:
 
     @pytest.mark.parametrize(
         "points",
-        [
-            MeasurePoint(randint(-100, 100), 0, randint(-1000, 1000))
-            for i in range(0, random_values_to_test)
-        ],
+        [MeasurePoint(randint(-100, 100), 0, randint(-1000, 1000)) for i in range(0, random_values_to_test)],
     )
     def test_on_first_vertices(self, simple_3d_line, points):
         tester = simple_3d_line.project(points)
@@ -128,10 +125,7 @@ class TestSimplePolyline:
 
     @pytest.mark.parametrize(
         "points",
-        [
-            MeasurePoint(randint(-100, 100), 30, randint(-1000, 1000))
-            for i in range(0, random_values_to_test)
-        ],
+        [MeasurePoint(randint(-100, 100), 30, randint(-1000, 1000)) for i in range(0, random_values_to_test)],
     )
     def test_on_last_vertices(self, simple_3d_line, points):
         tester = simple_3d_line.project(points)
