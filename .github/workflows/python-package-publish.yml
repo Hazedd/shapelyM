@@ -16,11 +16,11 @@ jobs:
           pip install flit
           flit install --deps develop
       - name: Test with pytest
-          env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          run: |
-            pytest --cov=shapelyM/
-            codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          pytest --cov=shapelyM/
+          codecov
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
