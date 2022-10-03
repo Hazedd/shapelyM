@@ -1,7 +1,7 @@
 name: Do things every 5 minutes
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "* * * * *"
 
 jobs:
   bump-version:
