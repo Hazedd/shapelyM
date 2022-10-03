@@ -43,5 +43,4 @@ jobs:
         COMMIT_MSG: ${{ github.event.head_commit.message }}
       run: |
         bumpversion build
-      if: env.SKIPBUMP == 'FALSE'
 
