@@ -8,7 +8,7 @@ from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_po
 from shapelyM.linear_reference import linear_reference_point_on_line
 from shapelyM.measurePoint import MeasurePoint
 
-DEBUG = False
+DEBUG = True
 if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
 
@@ -57,12 +57,16 @@ class LineProjection:
         ).value
 
         if DEBUG:  # pragma: no cover
+            # draw input point
             if point.z is not None:
                 acad.DrawShapelyObject(Point(point.x, point.y, point.z))
             else:
                 acad.DrawShapelyObject(Point(point.x, point.y))
             acad.DrawText(f"{self.side_of_line}", Point(point.x, point.y))
+
+            # draw line
             if line_point_1.z is not None and line_point_2.z is not None:
+                # acad.DrawText(f"start", Point(line_point_1.x, line_point_1.y))
                 acad.DrawShapelyObject(
                     LineString(
                         [
@@ -76,6 +80,7 @@ class LineProjection:
                     LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]])
                 )
 
+            # draw point on line
             if self.point_on_line.z is not None:
                 acad.DrawShapelyObject(
                     Point(self.point_on_line.x, self.point_on_line.y, self.point_on_line.z)
@@ -83,6 +88,7 @@ class LineProjection:
             else:
                 acad.DrawShapelyObject(Point(self.point_on_line.x, self.point_on_line.y))
 
+            # draw point to line
             if self.point_on_line.z is not None and point.z is not None:
                 acad.DrawShapelyObject(
                     LineString(

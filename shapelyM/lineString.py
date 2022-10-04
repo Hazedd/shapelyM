@@ -98,12 +98,11 @@ class LineStringMeasure:
                 )
 
             elif not next_point:
-                # point after the line: overshoot
+                # somewhere on last part of line..
                 return LineProjection(
                     previous_point,
                     closest_point,
-                    point,
-                    point_on_line_over_rule=self.line_measure_points[-1],
+                    point
                 )
 
             else:

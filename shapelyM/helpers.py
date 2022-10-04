@@ -27,15 +27,19 @@ def point_on_line(
     if a.x == b.x and a.y == b.y:
         return np.array([a.x, a.y, a.z])
 
-    if a.z is not None and b.z is not None and p.z is not None:
-        a_ = np.array([a.x, a.y, a.z])
-        b_ = np.array([b.x, b.y, b.z])
-        p_ = np.array([p.x, p.y, p.z])
+    # seems to work on 2d, not on 3 in case of
+    #  - Point([6, 3, -9])
+    #  - LineStringMeasure([[3, 0, 0], [3, 10, 10], [3, 20, 20], [3, 30, 30]])
 
-    else:
-        a_ = np.array([a.x, a.y])
-        b_ = np.array([b.x, b.y])
-        p_ = np.array([p.x, p.y])
+    # if a.z is not None and b.z is not None and p.z is not None:
+    #     a_ = np.array([float(a.x), float(a.y), float(a.z)])
+    #     b_ = np.array([float(b.x), float(b.y), float(b.z)])
+    #     p_ = np.array([float(p.x), float(p.y), float(p.z)])
+    # else:
+    a_ = np.array([float(a.x), float(a.y)])
+    b_ = np.array([float(b.x), float(b.y)])
+    p_ = np.array([float(p.x), float(p.y)])
+
 
     ap = p_ - a_
     ab = b_ - a_

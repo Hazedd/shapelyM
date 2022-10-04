@@ -134,7 +134,7 @@ class TestSimplePolyline:
     @pytest.mark.parametrize(
         "points",
         [
-            MeasurePoint(randint(-100, 100), randint(1, 9), randint(-1000, 10000))
+            MeasurePoint(randint(-100, 100), randint(1, 9), randint(-1000, 1000))
             for i in range(0, random_values_to_test)
         ],
     )
@@ -145,12 +145,13 @@ class TestSimplePolyline:
     @pytest.mark.parametrize(
         "points",
         [
-            MeasurePoint(randint(-100, 100), randint(21, 29), randint(-1000, 10000))
+            MeasurePoint(randint(-100, 100), randint(21, 29), randint(-1000, 1000))
             for i in range(0, random_values_to_test)
         ],
     )
     def test_on_last_part(self, simple_3d_line, points):
-        assert simple_3d_line.project(points).distance_along_line > 20
+        tester = simple_3d_line.project(points)
+        assert tester.distance_along_line > 20
 
 
 class TestComplexPolyline:
@@ -249,4 +250,47 @@ class TestComplexPolyline:
         tester = rail_connection_75t_line[0].project(Point(points[0], points[1], points[2]))
         assert round(tester.distance_along_line, 3) == points[3]
 
-    # TODO: add side of line test!
+
+class TestSideOfPolyline:
+    random_values_to_test = 10
+
+    @pytest.fixture
+    def simple_3d_line_x(self):
+        line_data = [[3, 0, 0], [3, 10, 10], [3, 20, 20], [3, 30, 30]]
+        fixture = LineStringMeasure(line_data)
+        return fixture
+
+    @pytest.fixture
+    def simple_3d_line_y(self):
+        line_data = [[0, 3, 0], [10, 3, 10], [20, 3, 20], [30, 3, 30]]
+        fixture = LineStringMeasure(line_data)
+        return fixture
+
+    #
+    # 6, 6, -7
+
+    @pytest.mark.parametrize(
+        "points", [
+            Point([6, 3, -9])
+        #     Point(6, randint(0, 30), randint(-10, 10))
+        #     for i in range(0, random_values_to_test)
+        ],
+    )
+    def test_right_of_line_x(self, simple_3d_line_x, points):
+        tester = simple_3d_line_x.project(Point(points))
+        assert tester.side_of_line == "Right"
+
+
+
+
+    # @pytest.mark.parametrize(
+    #     "points", [
+    #         Point(0, randint(0, 30), randint(-10, 10))
+    #         for i in range(0, random_values_to_test)
+    #     ]
+    # )
+    # def test_left_of_line_x(self, simple_3d_line_x, points):
+    #     tester = simple_3d_line_x.project(Point(points))
+    #     assert tester.side_of_line == "Left"
+
+
