@@ -270,18 +270,16 @@ class TestSideOfPolyline:
     # 6, 6, -7
 
     @pytest.mark.parametrize(
-        "points", [
+        "points",
+        [
             Point([6, 3, -9])
-        #     Point(6, randint(0, 30), randint(-10, 10))
-        #     for i in range(0, random_values_to_test)
+            #     Point(6, randint(0, 30), randint(-10, 10))
+            #     for i in range(0, random_values_to_test)
         ],
     )
     def test_right_of_line_x(self, simple_3d_line_x, points):
         tester = simple_3d_line_x.project(Point(points))
         assert tester.side_of_line == "Right"
-
-
-
 
     # @pytest.mark.parametrize(
     #     "points", [
@@ -292,5 +290,3 @@ class TestSideOfPolyline:
     # def test_left_of_line_x(self, simple_3d_line_x, points):
     #     tester = simple_3d_line_x.project(Point(points))
     #     assert tester.side_of_line == "Left"
-
-

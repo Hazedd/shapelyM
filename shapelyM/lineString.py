@@ -99,11 +99,7 @@ class LineStringMeasure:
 
             elif not next_point:
                 # somewhere on last part of line..
-                return LineProjection(
-                    previous_point,
-                    closest_point,
-                    point
-                )
+                return LineProjection(previous_point, closest_point, point)
 
             else:
                 # somewhere on the line

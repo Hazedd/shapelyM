@@ -40,7 +40,6 @@ def point_on_line(
     b_ = np.array([float(b.x), float(b.y)])
     p_ = np.array([float(p.x), float(p.y)])
 
-
     ap = p_ - a_
     ab = b_ - a_
     if not belong_to_segment:
