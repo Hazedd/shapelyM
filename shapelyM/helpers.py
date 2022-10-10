@@ -79,7 +79,7 @@ def determinate_left_right_on_line(
     shapely_line: LineString,
     projection_distance: float = 0.2,
 ) -> LeftRightOnLineEnum:
-    """Check and return left, right or on given a line point and rotation.
+    """Check and return left, right or on given a shapely linestring, point and rotation.
 
     :param point_to_check: point to check as shapely.geometry.Point
     :param azimuth: rotation from north as a float
