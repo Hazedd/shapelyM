@@ -4,7 +4,8 @@ from typing import Any, Dict, List, Optional
 
 from shapely.geometry import LineString, Point
 
-from shapelyM.helpers import is_between, point_on_line
+from shapelyM.helpers import check_point_between_points
+from shapelyM.linear_reference import project_point_on_line
 from shapelyM.measurePoint import MeasurePoint
 from shapelyM.projection import LineProjection
 
@@ -78,11 +79,13 @@ class LineStringMeasure:
                 next_point = self.line_measure_points[idx + 1]
 
             if not previous_point:
-                projected_on_line = point_on_line(closest_point, self.line_measure_points[idx + 1], point)
+                projected_on_line = project_point_on_line(
+                    closest_point, self.line_measure_points[idx + 1], point
+                )
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
                 # on first part of the line
-                if is_between(
+                if check_point_between_points(
                     self.line_measure_points[0],
                     self.line_measure_points[1],
                     projected_on_line_point,
@@ -103,12 +106,14 @@ class LineStringMeasure:
 
             else:
                 # somewhere on the line
-                projected_on_line = point_on_line(previous_point, closest_point, point)
+                projected_on_line = project_point_on_line(previous_point, closest_point, point)
                 projected_on_line_point = MeasurePoint(*projected_on_line)
-                on_previous = is_between(previous_point, closest_point, projected_on_line_point)
-                next_projected = point_on_line(closest_point, next_point, point)
+                on_previous = check_point_between_points(
+                    previous_point, closest_point, projected_on_line_point
+                )
+                next_projected = project_point_on_line(closest_point, next_point, point)
                 next_projected_point = MeasurePoint(*next_projected)
-                on_next = is_between(closest_point, next_point, next_projected_point)
+                on_next = check_point_between_points(closest_point, next_point, next_projected_point)
 
                 if on_previous and not on_next:
                     # on segment before the closest point

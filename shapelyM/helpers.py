@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from enum import Enum
-from typing import Union, cast
+from typing import Union
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -10,47 +10,63 @@ from shapely.geometry import LineString, Point
 from shapelyM.measurePoint import MeasurePoint
 
 
-def is_between(a: MeasurePoint, b: MeasurePoint, c: MeasurePoint) -> bool:
-    """.....
+def check_point_between_points(
+    point_1: Union[Point, MeasurePoint],
+    point_2: Union[Point, MeasurePoint],
+    point_to_check: Union[Point, MeasurePoint],
+) -> bool:
+    """Methode to check if a 2d point is between two other 2d points.
 
-    # todo: make sure it handles 3d.
+    Todo:
+     - make 2 dimensional check
+     - make minimal typehint dataclass
 
-    :param a:
-    :param b:
-    :param c:
-    :return:
+    :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point_2: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point_to_check: shapely.geometry.Point or shapelyM.MeasurePoint
+
+    :return: True if between points, False if not
     """
-    cross_product = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+    cross_product = (point_to_check.y - point_1.y) * (point_2.x - point_1.x) - (
+        point_to_check.x - point_1.x
+    ) * (point_2.y - point_1.y)
 
     # compare versus epsilon for floating point values, or != 0 if using integers
     if abs(cross_product) > 0.0000001:  # sys.float_info.epsilon:
         return False
 
-    dot_product = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y)
+    dot_product = (point_to_check.x - point_1.x) * (point_2.x - point_1.x) + (
+        point_to_check.y - point_1.y
+    ) * (point_2.y - point_1.y)
     if dot_product < 0:
         return False
 
-    squared_length_ba = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)
+    squared_length_ba = (point_2.x - point_1.x) * (point_2.x - point_1.x) + (point_2.y - point_1.y) * (
+        point_2.y - point_1.y
+    )
     if dot_product > squared_length_ba:
         return False
 
     return True
 
 
-def get_azimuth_from_points(point1: Point, point2: Point) -> float:
-    """
-    .........
+def get_azimuth_from_points(point1: Union[Point, MeasurePoint], point2: Union[Point, MeasurePoint]) -> float:
+    """Calculates the azimuth (rotation, north == 0) by two 2d points.
 
-    :param point1:
-    :param point2:
-    :return:
+    Todo:
+     - make minimal typehint dataclass
+
+    :param point1: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point2: shapely.geometry.Point or shapelyM.MeasurePoint
+
+    :return: azimuth value as a float
     """
     angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
     return float(np.degrees(angle)) if angle >= 0 else float(np.degrees(angle) + 360)
 
 
 class LeftRightOnLineEnum(str, Enum):
-    """......"""
+    """Enumeration to determinate if a Point is on left or right of a line."""
 
     left = "Left"
     right = "Right"
@@ -58,50 +74,48 @@ class LeftRightOnLineEnum(str, Enum):
 
 
 def determinate_left_right_on_line(
-    object_location: Point,
+    point_to_check: Point,
     azimuth: float,
-    line_geometry: LineString,
-    margin: float = 0.2,
+    shapely_line: LineString,
+    projection_distance: float = 0.2,
 ) -> LeftRightOnLineEnum:
-    """Get point left or right from a given line and rotation.
+    """Check and return left, right or on given a line point and rotation.
 
-    :param object_location:
-    :param azimuth:
-    :param line_geometry:
-    :param margin:
-    :return:
+    :param point_to_check: point to check as shapely.geometry.Point
+    :param azimuth: rotation from north as a float
+    :param shapely_line: line geometry as a shapely.geometry.LineString
+    :param projection_distance:
+    :return: shapelyM.LeftRightOnLineEnum
     """
-    projection_length = 1
-
     while azimuth < -0:
         azimuth = +360
 
     angle = 90 - azimuth
     angle_rad = math.radians(angle)
     end_point_projected_on_azimuth = Point(
-        object_location.x + projection_length * math.cos(angle_rad),
-        object_location.y + projection_length * math.sin(angle_rad),
+        point_to_check.x + projection_distance * math.cos(angle_rad),
+        point_to_check.y + projection_distance * math.sin(angle_rad),
     )
 
     # CAN NOT HANDLE POINTS IN FRONT OF LINE, WILL RETURN 0.0 THAT WILL RESULT IN ON VECTOR
 
     # if same, adjust point measure -0.00000000
-    object_measure = line_geometry.project(object_location)
-    projected_measure = line_geometry.project(end_point_projected_on_azimuth)
+    object_measure = shapely_line.project(point_to_check)
+    projected_measure = shapely_line.project(end_point_projected_on_azimuth)
     if object_measure == projected_measure:
         object_measure = object_measure - 0.00001
-    object_point_on_line = line_geometry.interpolate(object_measure)
-    projected_point_on_line = line_geometry.interpolate(projected_measure)
+    object_point_on_line = shapely_line.interpolate(object_measure)
+    projected_point_on_line = shapely_line.interpolate(projected_measure)
 
     _value = np.sign(
-        (object_point_on_line.x - projected_point_on_line.x) * (object_location.y - projected_point_on_line.y)
+        (object_point_on_line.x - projected_point_on_line.x) * (point_to_check.y - projected_point_on_line.y)
         - (object_point_on_line.y - projected_point_on_line.y)
-        * (object_location.x - projected_point_on_line.x)
+        * (point_to_check.x - projected_point_on_line.x)
     )
 
-    distance = object_location.distance(line_geometry)
+    distance = point_to_check.distance(shapely_line)
 
-    if distance < margin or _value == 0:
+    if distance < projection_distance or _value == 0:
         return LeftRightOnLineEnum.on_vector
     elif _value < 0:
         return LeftRightOnLineEnum.left
@@ -109,89 +123,3 @@ def determinate_left_right_on_line(
         return LeftRightOnLineEnum.right
 
     raise ValueError
-
-
-def point_on_line(
-    a: Union[MeasurePoint, Point],
-    b: Union[MeasurePoint, Point],
-    p: Union[MeasurePoint, Point],
-    belong_to_segment: bool = False,
-) -> np.ndarray:
-    """......
-
-    :param a:
-    :param b:
-    :param p:
-    :param belong_to_segment:
-    :return:
-    """
-    if a.x == b.x and a.y == b.y:
-        return np.array([a.x, a.y, a.z])
-
-    # seems to work on 2d, not on 3 in case of
-    #  - Point([6, 3, -9])
-    #  - LineStringMeasure([[3, 0, 0], [3, 10, 10], [3, 20, 20], [3, 30, 30]])
-
-    # if a.z is not None and b.z is not None and p.z is not None:
-    #     a_ = np.array([float(a.x), float(a.y), float(a.z)])
-    #     b_ = np.array([float(b.x), float(b.y), float(b.z)])
-    #     p_ = np.array([float(p.x), float(p.y), float(p.z)])
-    # else:
-    a_ = np.array([float(a.x), float(a.y)])
-    b_ = np.array([float(b.x), float(b.y)])
-    p_ = np.array([float(p.x), float(p.y)])
-
-    # define here two 3D points
-    point_1 = [a.x, a.y, a.z]
-    point_2 = [b.x, b.y, b.z]
-
-    ap = p_ - a_
-    ab = b_ - a_
-    if not belong_to_segment:
-        point_2d = a_ + np.dot(ap, ab) / np.dot(ab, ab) * ab
-        if point_1[2] is not None and point_2[2] is not None:
-            # get Z value of the 2D point
-            z = getZvalue(point_1, point_2, point_2d)
-            # point_3d = point_2d.append(z)
-            point_3d = np.append(point_2d, z)
-            return cast(np.ndarray, point_3d)
-        return cast(np.ndarray, point_2d)
-    else:
-        t = np.dot(ap, ab) / np.dot(ab, ab)
-        t = max(0, min(1, t))
-        response = a_ + t * ab
-        return cast(np.ndarray, response)
-
-
-# todo: typehint
-def getZvalue(point_1, point_2, point):
-    x1 = point_1[0]
-    x2 = point_2[0]
-    y1 = point_1[1]
-    y2 = point_2[1]
-    z1 = point_1[2]
-    z2 = point_2[2]
-
-    x = point[0]
-    y = point[1]
-
-    if (x2 - x1) != 0:
-        z = ((x - x1) / (x2 - x1)) * (z2 - z1) + z1
-    else:
-        z = ((y - y1) / (y2 - y1)) * (z2 - z1) + z1
-
-    return z
-
-
-def getYvalue(point_1, point_2, x):
-    x1 = point_1[0]
-    x2 = point_2[0]
-    y1 = point_1[1]
-    y2 = point_2[1]
-
-    if (x2 - x1) != 0:
-        y = ((x - x1) / (x2 - x1)) * (y2 - y1) + y1
-    else:
-        y = min(y1, y2) + max(y1, y2) / 2
-
-    return y
