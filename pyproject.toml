@@ -15,6 +15,9 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 
+[project.urls]
+homepage = "https://github.com/Hazedd/shapelyM"
+
 dependencies = [
     "shapely",
     "numpy"
