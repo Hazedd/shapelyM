@@ -17,12 +17,15 @@ ShapelyM can be used to linear referencing in 3D and is designed to work (withou
 
 ## Usage:
 ```python
+from shapely.geometry import Point
 from shapelyM import LineStringMeasure, MeasurePoint
 ```
 
 ```python
 line_measure = LineStringMeasure([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]])
 projection = line_measure.project(Point(0, 5, 0))
+# or:
+# projection = line_measure.project(MeasurePoint(0, 5, 0))
 ```
 
 ### Returns:
