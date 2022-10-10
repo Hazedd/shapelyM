@@ -15,9 +15,6 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 
-[project.urls]
-homepage = "https://github.com/Hazedd/shapelyM"
-
 dependencies = [
     "shapely",
     "numpy"
@@ -40,6 +37,9 @@ dev = [
     "bumpversion",
     "pyautocad",
 ]
+
+[project.urls]
+homepage = "https://example.com"
 
 [build-system]
 build-backend = "flit_core.buildapi"
