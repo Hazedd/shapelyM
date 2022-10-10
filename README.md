@@ -84,8 +84,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [ ] version 1.0.0
 
 ## Requirements 
-New python project uses pyproject.toml to manage requerments and can be build by a newer build backend. 
-For now we use flit https://flit.pypa.io/en/latest/index.html. Flit also doesn’t help you manage dependencies: you have to add them to pyproject.toml by hand. Tools like Poetry and Pipenv have features which help add and update dependencies on other packages. https://python-poetry.org/
+pyproject.toml to manage requirements and can be build by a newer build backend.
 
 ## Build and Test
 Install MakeFile for quality of life
@@ -95,6 +94,7 @@ After setting up a venv we use `make install` to build a fresh pulled repo
 Code quality checks and testing needs to be passed and will be checked on every commit and in the pipeline. If code wont pass it wont commit so make sure to check it before with make check-all!
 
 We use:
+- flit as a build-backend. 
 - pytest for testing, manual by `make test` in a console.
 - flake8 and black for linting, manual by `make lint` in a console.
 - myPy for typechecking, manual by `make typecheck` in a console.
@@ -102,7 +102,6 @@ We use:
 - bumpversion for changing the version
 - pyAutocad for debug visualizing
 
-We use flit as a build-backend and for managing (optional) dependencies.
 
 ## Testing
 Make an effort to test each bit of functionality you add. Try to keep it simple.

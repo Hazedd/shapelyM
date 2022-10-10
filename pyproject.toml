@@ -39,7 +39,7 @@ dev = [
 ]
 
 [project.urls]
-homepage = "https://example.com"
+homepage = "https://github.com/Hazedd/shapelyM"
 
 [build-system]
 build-backend = "flit_core.buildapi"
