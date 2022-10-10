@@ -41,5 +41,3 @@ def linear_reference_point_on_line(
             point_on_line_2d = [point_2.x, point_2.y]
 
         return point_on_line_2d
-
-

@@ -170,7 +170,7 @@ def project_point_on_line(
 
 
 def get_z_between_points(point_1, point_2, point):
-    """
+    """Get z value on a 2d point between two 3d points.
 
     Todo:
      - make minimal point typehint dataclass
@@ -195,7 +195,7 @@ def get_z_between_points(point_1, point_2, point):
 
 
 def get_y_between_points(point_1, point_2, x):
-    """
+    """Get the y value between two 2d points given a x value.
 
     Todo:
      - make minimal point typehint dataclass
