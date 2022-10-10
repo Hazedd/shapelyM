@@ -6,6 +6,13 @@ Shapely is a BSD-licensed Python package for manipulation and analysis of planar
 
 ShapelyM can be used to linear referencing in 3D and is designed to work (without) shapely.
 
+## Installation
+
+```bash
+pip install markdown-code-blocks
+```
+
+
 ## Way of working
 1. project (3d) point on on 2d polyline (representation of a 3d polyline)
 2. get measure
