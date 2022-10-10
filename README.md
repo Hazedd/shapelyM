@@ -9,7 +9,7 @@ ShapelyM can be used to linear referencing in 3D and is designed to work (withou
 ## Installation
 
 ```bash
-pip install markdown-code-blocks
+pip install shapelyM
 ```
 
 
