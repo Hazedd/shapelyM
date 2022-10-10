@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from shapelyM.helpers import point_on_line
+from shapelyM.helpers import point_on_line, is_between
 from shapelyM.measurePoint import MeasurePoint
 
 
@@ -9,6 +9,10 @@ def linear_reference_point_on_line(a: MeasurePoint, b: MeasurePoint, p: MeasureP
         point_on_line_2d = point_on_line(
             MeasurePoint(a.x, a.y), MeasurePoint(b.x, b.y), MeasurePoint(p.x, p.y)
         )
+        # check if on line part
+        if not is_between(a, b, MeasurePoint(*point_on_line_2d)):
+            point_on_line_2d = [b.x, b.y]
+
         point = MeasurePoint(point_on_line_2d[0], point_on_line_2d[1])
         start_distance = point.distance(a, force_2d=True)
         end_distance = a.distance(b, force_2d=True)
@@ -20,4 +24,9 @@ def linear_reference_point_on_line(a: MeasurePoint, b: MeasurePoint, p: MeasureP
         point.z = a.z + ((b.z - a.z) * percentage)
         return point_on_line(a, b, point)
     else:
-        return point_on_line(a, b, p)
+        point_on_line_2d = point_on_line(a, b, p)
+        # check if on line part
+        if not is_between(a, b, MeasurePoint(*point_on_line_2d)):
+            point_on_line_2d = [b.x, b.y]
+
+        return point_on_line_2d

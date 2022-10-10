@@ -50,6 +50,7 @@ class LineProjection:
         if not azimuth:
             azimuth = get_azimuth_from_points(line_point_1, line_point_2)
 
+        # check if point on last vector of line then
         self.side_of_line = determinate_left_right_on_line(
             Point([self.point.x, self.point.y]),
             azimuth,
