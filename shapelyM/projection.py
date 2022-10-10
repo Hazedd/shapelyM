@@ -8,7 +8,7 @@ from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_po
 from shapelyM.linear_reference import linear_reference_point_on_line
 from shapelyM.measurePoint import MeasurePoint
 
-DEBUG = True
+DEBUG = False
 if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
 

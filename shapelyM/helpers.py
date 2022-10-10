@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import math
 from enum import Enum
-from typing import cast, Union
+from typing import Union, cast
+
 import numpy as np
 from shapely.geometry import LineString, Point
 
@@ -92,7 +93,6 @@ def determinate_left_right_on_line(
     object_point_on_line = line_geometry.interpolate(object_measure)
     projected_point_on_line = line_geometry.interpolate(projected_measure)
 
-
     _value = np.sign(
         (object_point_on_line.x - projected_point_on_line.x) * (object_location.y - projected_point_on_line.y)
         - (object_point_on_line.y - projected_point_on_line.y)
@@ -109,7 +109,6 @@ def determinate_left_right_on_line(
         return LeftRightOnLineEnum.right
 
     raise ValueError
-
 
 
 def point_on_line(
@@ -145,7 +144,6 @@ def point_on_line(
     # define here two 3D points
     point_1 = [a.x, a.y, a.z]
     point_2 = [b.x, b.y, b.z]
-
 
     ap = p_ - a_
     ab = b_ - a_
@@ -194,6 +192,6 @@ def getYvalue(point_1, point_2, x):
     if (x2 - x1) != 0:
         y = ((x - x1) / (x2 - x1)) * (y2 - y1) + y1
     else:
-        y = (min(y1, y2) + max(y1, y2) / 2)
+        y = min(y1, y2) + max(y1, y2) / 2
 
     return y

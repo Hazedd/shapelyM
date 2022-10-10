@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from shapelyM.helpers import point_on_line, is_between
+from shapelyM.helpers import is_between, point_on_line
 from shapelyM.measurePoint import MeasurePoint
 
 
