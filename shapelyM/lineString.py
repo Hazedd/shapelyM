@@ -6,12 +6,17 @@ from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import check_point_between_points, project_point_on_line
 from shapelyM.measurePoint import MeasurePoint
-from shapelyM.projection import LineProjection
+from shapelyM.projection import GetLineProjection
 
 
 class LineStringMeasure:
     def __init__(self, coordinates: List[List[float]]):
-        """.........."""
+        """..........
+
+        Todo:
+          - major refactor
+          """
+
         self.shapely: LineString = LineString(coordinates)
         self._line_coordinates_raw: List[List[float]] = coordinates
         self.line_measure_points: List[MeasurePoint] = self._calculate_length(coordinates)
@@ -48,7 +53,7 @@ class LineStringMeasure:
 
     def project(
         self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
-    ) -> LineProjection:
+    ) -> GetLineProjection:
         """..........
 
         :param point:
@@ -65,7 +70,7 @@ class LineStringMeasure:
             l_p1 = self.line_measure_points[distance_idx[0][1]]
             l_p2 = self.line_measure_points[distance_idx[1][1]]
             # point exactly in the middle of the line
-            return LineProjection(l_p1, l_p2, point)
+            return GetLineProjection(l_p1, l_p2, point)
 
         else:
             closest_point = self.line_measure_points[idx]
@@ -90,19 +95,19 @@ class LineStringMeasure:
                     self.line_measure_points[1],
                     projected_on_line_point,
                 ):
-                    return LineProjection(closest_point, next_point, point)
+                    return GetLineProjection(closest_point, next_point, point)
 
                 # point in front of the line: undershoot
-                return LineProjection(
+                return GetLineProjection(
                     self.line_measure_points[0],
                     self.line_measure_points[1],
                     point,
-                    point_on_line_over_rule=self.line_measure_points[0],
+                    point_on_line_overrule=self.line_measure_points[0],
                 )
 
             elif not next_point:
                 # somewhere on last part of line..
-                return LineProjection(previous_point, closest_point, point)
+                return GetLineProjection(previous_point, closest_point, point)
 
             else:
                 # somewhere on the line
@@ -117,12 +122,12 @@ class LineStringMeasure:
 
                 if on_previous and not on_next:
                     # on segment before the closest point
-                    return LineProjection(previous_point, closest_point, point)
+                    return GetLineProjection(previous_point, closest_point, point)
 
                 elif on_next and not on_previous:
                     # on segment after the closest point
-                    return LineProjection(closest_point, next_point, point)
+                    return GetLineProjection(closest_point, next_point, point)
 
                 else:
                     # on vertices
-                    return LineProjection(closest_point, next_point, point)
+                    return GetLineProjection(closest_point, next_point, point)

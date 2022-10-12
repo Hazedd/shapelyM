@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from typing import Optional
+from dataclasses import dataclass
 
 from shapely.geometry import LineString, Point
 
-from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_points
+from shapelyM.measurePoint import MeasurePoint
+from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_points, LeftRightOnLineEnum
 from shapelyM.linear_reference import linear_reference_point_on_line
 
 DEBUG = False
@@ -14,32 +16,44 @@ if DEBUG:  # pragma: no cover
     acad = AutocadService()
 
 
-class LineProjection:
+@dataclass
+class LineProjectionNew:
+    point: MeasurePoint
+    point_on_line: MeasurePoint
+    distance_to_line_2d: float
+    distance_along_line: float
+    azimuth: float
+    side_of_line: LeftRightOnLineEnum
+
+
+class GetLineProjection:
     def __init__(
         self,
-        line_point_1: Point,
-        line_point_2: Point,
-        point: Point,
-        point_on_line_over_rule: Optional[Point] = None,
+        line_point_1: MeasurePoint,
+        line_point_2: MeasurePoint,
+        point: MeasurePoint,
+        point_on_line_overrule: Optional[MeasurePoint] = None,
         azimuth: Optional[float] = None,
     ):
-        """..........
+        """.........
 
-        TODO: make dataclass factory!
+        Todo:
+          - make dataclass factory!
+          - refactor
 
         :param line_point_1:
         :param line_point_2:
         :param point:
-        :param point_on_line_over_rule:
+        :param point_on_line_overrule:
         :param azimuth:
         """
         self.point = point
         self.point_on_line = linear_reference_point_on_line(line_point_1, line_point_2, point)
         self.distance_to_line = self.point.distance(self.point_on_line)
         self.distance_to_line_2d = self.point.distance(self.point_on_line, force_2d=True)
-        if point_on_line_over_rule is not None:
-            self.point_on_line = point_on_line_over_rule
-            self.distance_along_line = point_on_line_over_rule.m
+        if point_on_line_overrule is not None:
+            self.point_on_line = point_on_line_overrule
+            self.distance_along_line = point_on_line_overrule.m
         else:
             self.point_on_line = self.point_on_line
             self.distance_along_line = line_point_1.m + line_point_1.distance(self.point_on_line)

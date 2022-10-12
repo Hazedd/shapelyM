@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Protocol
+from typing import List, Optional, Protocol, Union
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -111,7 +111,7 @@ def correct_azimuth(azimuth: float) -> float:
 
 
 def determinate_left_right_on_line(
-    point_to_check: Point,
+    point_to_check: Union[Point],
     azimuth: float,
     shapely_line: LineString,
     projection_distance: float = 0.2,

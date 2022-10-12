@@ -33,9 +33,9 @@ def linear_reference_point_on_line(
         new_point = project_point_on_line(point_1, point_2, point_to_project)
         new_point = _correct_overshoot(point_1, point_2, new_point)
         new_point.z = get_z_between_points(point_1, point_2, new_point)
-        return new_point
+        return MeasurePoint(*new_point.coords)
 
     else:
-        point_on_line_2d = project_point_on_line(point_1, point_2, point_to_project)
-        point_on_line_2d = _correct_overshoot(point_1, point_2, point_on_line_2d)
-        return point_on_line_2d
+        new_point = project_point_on_line(point_1, point_2, point_to_project)
+        new_point = _correct_overshoot(point_1, point_2, new_point)
+        return MeasurePoint(*new_point.coords)
