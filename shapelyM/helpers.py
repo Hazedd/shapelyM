@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import math
 from enum import Enum
-from typing import Union, cast, Protocol, Optional
+from typing import List, Union, cast, Protocol, Optional
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -13,6 +13,7 @@ class PointProtocol(Protocol):
     x: float
     y: float
     z: Optional[float]
+    coords = List[float]
 
 
 @dataclass
@@ -20,6 +21,14 @@ class MinimalPoint:
     x: float
     y: float
     z: Optional[float] = None
+
+    def _get_coords(self):
+        if self.z is not None:
+            return [self.x, self.y, self.z]
+        else:
+            return [self.x, self.y]
+
+    coords = property(_get_coords)
 
 
 def get_shapley_point_from_minimal_point(point: PointProtocol, force_2d: bool = None) -> Point:
@@ -156,64 +165,49 @@ def project_point_on_line(
     point_2: PointProtocol,
     point_to_project: PointProtocol,
     belong_to_segment: bool = False,
-) -> np.ndarray:
-    """A.....
-
-    Todo:
-     - make minimal point typehint dataclass
+) -> MinimalPoint:
+    """Project a point on a line returning a MinimalPoint on the line.
 
     :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point_2: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point_to_project: shapely.geometry.Point or shapelyM.MeasurePoint
     :param belong_to_segment: returns the closest vertices
 
-    :return: Point as a np.ndarray
+    :return: MinimalPoint
     """
     if point_1.x == point_2.x and point_1.y == point_2.y:
-        return np.array([point_1.x, point_1.y, point_1.z])
+        return MinimalPoint(*np.array([point_1.x, point_1.y, point_1.z]))
 
-    a_ = np.array([float(point_1.x), float(point_1.y)])
-    b_ = np.array([float(point_2.x), float(point_2.y)])
-    p_ = np.array([float(point_to_project.x), float(point_to_project.y)])
+    a = np.array([float(point_1.x), float(point_1.y)])
+    b = np.array([float(point_2.x), float(point_2.y)])
+    p = np.array([float(point_to_project.x), float(point_to_project.y)])
 
-    point_1 = [point_1.x, point_1.y, point_1.z]
-    point_2 = [point_2.x, point_2.y, point_2.z]
+    point_1 = MinimalPoint(point_1.x, point_1.y, point_1.z)
+    point_2 = MinimalPoint(point_2.x, point_2.y, point_2.z)
 
-    ap = p_ - a_
-    ab = b_ - a_
+    ap = p - a
+    ab = b - a
+
     if not belong_to_segment:
-        point_2d = a_ + np.dot(ap, ab) / np.dot(ab, ab) * ab
-        if point_1[2] is not None and point_2[2] is not None:
-            z = get_z_between_points(point_1, point_2, point_2d)
-            point_3d = np.append(point_2d, z)
-
-            tester = MinimalPoint(*point_3d)
-            return cast(np.ndarray, point_3d)
-
-        tester = MinimalPoint(*point_2d)
-        return cast(np.ndarray, point_2d)
+        coordinates_2d = a + np.dot(ap, ab) / np.dot(ab, ab) * ab
+        new_point = MinimalPoint(*coordinates_2d)
+        if point_1.z is not None and point_2.z is not None:
+            new_point.z = get_z_between_points(point_1, point_2, new_point)
+        return new_point
 
     else:
         t = np.dot(ap, ab) / np.dot(ab, ab)
         t = max(0, min(1, t))
-        response = a_ + t * ab
-
-        tester = MinimalPoint(*response)
-        return cast(np.ndarray, response)
+        coordinates = a + t * ab
+        return MinimalPoint(*coordinates)
 
 
 def get_z_between_points(point_1: PointProtocol, point_2: PointProtocol, point: PointProtocol) -> float:
     """Get z value on a 2d point between two 3d points."""
+    x1, y1, z1 = point_1.x, point_1.y, point_1.z
+    x2, y2, z2 = point_2.x, point_2.y, point_2.z
 
-    x1 = point_1[0]
-    x2 = point_2[0]
-    y1 = point_1[1]
-    y2 = point_2[1]
-    z1 = point_1[2]
-    z2 = point_2[2]
-
-    x = point[0]
-    y = point[1]
+    x, y = point.x, point.y
 
     if (x2 - x1) != 0:
         z = ((x - x1) / (x2 - x1)) * (z2 - z1) + z1
@@ -223,17 +217,14 @@ def get_z_between_points(point_1: PointProtocol, point_2: PointProtocol, point: 
     return z
 
 
-def get_y_between_points(point_1: PointProtocol, point_2: PointProtocol, x: float) -> float:
-    """Get the y value between two 2d points given a x value."""
-
-    x1 = point_1[0]
-    x2 = point_2[0]
-    y1 = point_1[1]
-    y2 = point_2[1]
-
-    if (x2 - x1) != 0:
-        y = ((x - x1) / (x2 - x1)) * (y2 - y1) + y1
-    else:
-        y = min(y1, y2) + max(y1, y2) / 2
-
-    return y
+# def get_y_between_points(point_1: PointProtocol, point_2: PointProtocol, x: float) -> float:
+#     """Get the y value between two 2d points given a x value."""
+#     x1, y1 = point_1.z, point_1.y
+#     x2, y2 = point_2.x, point_2.y
+#
+#     if (x2 - x1) != 0:
+#         y = ((x - x1) / (x2 - x1)) * (y2 - y1) + y1
+#     else:
+#         y = min(y1, y2) + max(y1, y2) / 2
+#
+#     return y

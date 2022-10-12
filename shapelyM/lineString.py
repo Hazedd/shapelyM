@@ -80,7 +80,7 @@ class LineStringMeasure:
             if not previous_point:
                 projected_on_line = project_point_on_line(
                     closest_point, self.line_measure_points[idx + 1], point
-                )
+                ).coords
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
                 # on first part of the line
@@ -105,12 +105,12 @@ class LineStringMeasure:
 
             else:
                 # somewhere on the line
-                projected_on_line = project_point_on_line(previous_point, closest_point, point)
+                projected_on_line = project_point_on_line(previous_point, closest_point, point).coords
                 projected_on_line_point = MeasurePoint(*projected_on_line)
                 on_previous = check_point_between_points(
                     previous_point, closest_point, projected_on_line_point
                 )
-                next_projected = project_point_on_line(closest_point, next_point, point)
+                next_projected = project_point_on_line(closest_point, next_point, point).coords
                 next_projected_point = MeasurePoint(*next_projected)
                 on_next = check_point_between_points(closest_point, next_point, next_projected_point)
 

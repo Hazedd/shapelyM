@@ -5,6 +5,8 @@ from typing import List
 
 from shapely.geometry import Point
 
+from shapelyM.helpers import MinimalPoint
+
 
 class MeasurePoint:
     def __init__(self, x: float, y: float, z: float = None, m: float = None):
@@ -26,7 +28,7 @@ class MeasurePoint:
             return [self.x, self.y, self.z]
         return [self.x, self.y]
 
-    def distance(self, point_geometry: MeasurePoint, force_2d: bool = False) -> float:
+    def distance(self, point_geometry: MinimalPoint, force_2d: bool = False) -> float:
         if self.z is not None and point_geometry.z is not None and force_2d is not True:
             return math.sqrt(
                 math.pow(point_geometry.x - self.x, 2)
