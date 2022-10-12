@@ -1,7 +1,12 @@
 from __future__ import annotations
 
-from shapelyM.helpers import check_point_between_points, project_point_on_line, PointProtocol, MinimalPoint, \
-    get_z_between_points
+from shapelyM.helpers import (
+    MinimalPoint,
+    PointProtocol,
+    check_point_between_points,
+    get_z_between_points,
+    project_point_on_line,
+)
 from shapelyM.measurePoint import MeasurePoint
 
 
@@ -24,7 +29,6 @@ def linear_reference_point_on_line(
     :param point_to_project: shapely.geometry.Point or shapelyM.MeasurePoint
 
     """
-
     if point_1.z is not None and point_2.z is not None and point_to_project.z is not None:
         new_point = project_point_on_line(point_1, point_2, point_to_project)
         new_point = _correct_overshoot(point_1, point_2, new_point)

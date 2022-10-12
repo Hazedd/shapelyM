@@ -1,9 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
 
 import math
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Union, cast, Protocol, Optional
+from typing import List, Optional, Protocol
 
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -21,14 +21,18 @@ class MinimalPoint:
     x: float
     y: float
     z: Optional[float] = None
+    _coords: List[float] = field(default_factory=lambda: [])
 
-    def _get_coords(self):
+    @property
+    def coords(self) -> List[float]:
         if self.z is not None:
             return [self.x, self.y, self.z]
         else:
             return [self.x, self.y]
 
-    coords = property(_get_coords)
+    # @coords.setter
+    # def coords(self) -> None:
+    #     pass
 
 
 def get_shapley_point_from_minimal_point(point: PointProtocol, force_2d: bool = None) -> Point:
@@ -99,7 +103,6 @@ class LeftRightOnLineEnum(str, Enum):
 
 def correct_azimuth(azimuth: float) -> float:
     """Add or subtract till in range 0-360."""
-
     while azimuth < -0:
         azimuth = +360
     while azimuth > -0:
@@ -108,7 +111,7 @@ def correct_azimuth(azimuth: float) -> float:
 
 
 def determinate_left_right_on_line(
-    point_to_check: Union[Point, PointProtocol],
+    point_to_check: Point,
     azimuth: float,
     shapely_line: LineString,
     projection_distance: float = 0.2,
@@ -121,9 +124,8 @@ def determinate_left_right_on_line(
     :param projection_distance:
     :return: shapelyM.LeftRightOnLineEnum
     """
-
     if not isinstance(point_to_check, Point):
-        get_shapley_point_from_minimal_point(point_to_check)
+        point_to_check = get_shapley_point_from_minimal_point(point_to_check)
 
     azimuth = correct_azimuth(azimuth)
     angle = 90 - azimuth

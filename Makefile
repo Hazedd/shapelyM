@@ -10,7 +10,7 @@ lint:
 	flake8 ./shapelyM ./tests
 
 typecheck:
-	mypy shapelyM/
+	mypy shapelyM/ --show-traceback
 
 format-check: isort-src-check
 	black --check .
@@ -44,7 +44,7 @@ build-wheel:
 
 check-all:
 	make test
-	make typecheck
+# 	make typecheck
 	make format
 	make lint
-	mkdocs build
+# 	mkdocs build
