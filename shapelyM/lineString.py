@@ -15,8 +15,7 @@ class LineStringMeasure:
 
         Todo:
           - major refactor
-          """
-
+        """
         self.shapely: LineString = LineString(coordinates)
         self._line_coordinates_raw: List[List[float]] = coordinates
         self.line_measure_points: List[MeasurePoint] = self._calculate_length(coordinates)

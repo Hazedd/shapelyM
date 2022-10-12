@@ -1,13 +1,17 @@
 from __future__ import annotations
 
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 from shapely.geometry import LineString, Point
 
-from shapelyM.measurePoint import MeasurePoint
-from shapelyM.helpers import determinate_left_right_on_line, get_azimuth_from_points, LeftRightOnLineEnum
+from shapelyM.helpers import (
+    LeftRightOnLineEnum,
+    determinate_left_right_on_line,
+    get_azimuth_from_points,
+)
 from shapelyM.linear_reference import linear_reference_point_on_line
+from shapelyM.measurePoint import MeasurePoint
 
 DEBUG = False
 if DEBUG:  # pragma: no cover
