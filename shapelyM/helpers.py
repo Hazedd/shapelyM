@@ -1,25 +1,43 @@
 from __future__ import annotations
+from dataclasses import dataclass
 
 import math
 from enum import Enum
-from typing import Union, cast
+from typing import Union, cast, Protocol, Optional
 
 import numpy as np
 from shapely.geometry import LineString, Point
 
-from shapelyM.measurePoint import MeasurePoint
+
+class PointProtocol(Protocol):
+    x: float
+    y: float
+    z: Optional[float]
+
+
+@dataclass
+class MinimalPoint:
+    x: float
+    y: float
+    z: Optional[float] = None
+
+
+def get_shapley_point_from_minimal_point(point: PointProtocol, force_2d: bool = None) -> Point:
+    if point.z and not force_2d:
+        return Point(point.x, point.y, point.z)
+    else:
+        return Point(point.x, point.y)
 
 
 def check_point_between_points(
-    point_1: Union[Point, MeasurePoint],
-    point_2: Union[Point, MeasurePoint],
-    point_to_check: Union[Point, MeasurePoint],
+    point_1: PointProtocol,
+    point_2: PointProtocol,
+    point_to_check: PointProtocol,
 ) -> bool:
     """Methode to check if a 2d point is between two other 2d points.
 
     Todo:
      - make 2 dimensional check
-     - make minimal point typehint dataclass
 
     :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point_2: shapely.geometry.Point or shapelyM.MeasurePoint
@@ -50,11 +68,8 @@ def check_point_between_points(
     return True
 
 
-def get_azimuth_from_points(point1: Union[Point, MeasurePoint], point2: Union[Point, MeasurePoint]) -> float:
+def get_azimuth_from_points(point1: PointProtocol, point2: PointProtocol) -> float:
     """Calculates the azimuth (rotation, north == 0) by two 2d points.
-
-    Todo:
-     - make minimal point typehint dataclass
 
     :param point1: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point2: shapely.geometry.Point or shapelyM.MeasurePoint
@@ -73,8 +88,18 @@ class LeftRightOnLineEnum(str, Enum):
     on_vector = "On"
 
 
+def correct_azimuth(azimuth: float) -> float:
+    """Add or subtract till in range 0-360."""
+
+    while azimuth < -0:
+        azimuth = +360
+    while azimuth > -0:
+        azimuth = -360
+    return azimuth
+
+
 def determinate_left_right_on_line(
-    point_to_check: Point,
+    point_to_check: Union[Point, PointProtocol],
     azimuth: float,
     shapely_line: LineString,
     projection_distance: float = 0.2,
@@ -87,27 +112,28 @@ def determinate_left_right_on_line(
     :param projection_distance:
     :return: shapelyM.LeftRightOnLineEnum
     """
-    while azimuth < -0:
-        azimuth = +360
 
+    if not isinstance(point_to_check, Point):
+        get_shapley_point_from_minimal_point(point_to_check)
+
+    azimuth = correct_azimuth(azimuth)
     angle = 90 - azimuth
     angle_rad = math.radians(angle)
-    end_point_projected_on_azimuth = Point(
+    point_projected_on_azimuth_angle = Point(
         point_to_check.x + projection_distance * math.cos(angle_rad),
         point_to_check.y + projection_distance * math.sin(angle_rad),
     )
 
-    # CAN NOT HANDLE POINTS IN FRONT OF LINE, WILL RETURN 0.0 THAT WILL RESULT IN ON VECTOR
-
-    # if same, adjust point measure -0.00000000
     object_measure = shapely_line.project(point_to_check)
-    projected_measure = shapely_line.project(end_point_projected_on_azimuth)
+    projected_measure = shapely_line.project(point_projected_on_azimuth_angle)
+    # if same probably on last part of line, adjust object measure -0.00000000
     if object_measure == projected_measure:
         object_measure = object_measure - 0.00001
+
     object_point_on_line = shapely_line.interpolate(object_measure)
     projected_point_on_line = shapely_line.interpolate(projected_measure)
 
-    _value = np.sign(
+    distance_to_line = np.sign(
         (object_point_on_line.x - projected_point_on_line.x) * (point_to_check.y - projected_point_on_line.y)
         - (object_point_on_line.y - projected_point_on_line.y)
         * (point_to_check.x - projected_point_on_line.x)
@@ -115,20 +141,20 @@ def determinate_left_right_on_line(
 
     distance = point_to_check.distance(shapely_line)
 
-    if distance < projection_distance or _value == 0:
+    if distance < projection_distance or distance_to_line == 0:
         return LeftRightOnLineEnum.on_vector
-    elif _value < 0:
+    elif distance_to_line < 0:
         return LeftRightOnLineEnum.left
-    elif _value > 0:
+    elif distance_to_line > 0:
         return LeftRightOnLineEnum.right
 
     raise ValueError
 
 
 def project_point_on_line(
-    point_1: Union[Point, MeasurePoint],
-    point_2: Union[Point, MeasurePoint],
-    point_to_project: Union[Point, MeasurePoint],
+    point_1: PointProtocol,
+    point_2: PointProtocol,
+    point_to_project: PointProtocol,
     belong_to_segment: bool = False,
 ) -> np.ndarray:
     """A.....
@@ -160,22 +186,25 @@ def project_point_on_line(
         if point_1[2] is not None and point_2[2] is not None:
             z = get_z_between_points(point_1, point_2, point_2d)
             point_3d = np.append(point_2d, z)
+
+            tester = MinimalPoint(*point_3d)
             return cast(np.ndarray, point_3d)
+
+        tester = MinimalPoint(*point_2d)
         return cast(np.ndarray, point_2d)
+
     else:
         t = np.dot(ap, ab) / np.dot(ab, ab)
         t = max(0, min(1, t))
         response = a_ + t * ab
+
+        tester = MinimalPoint(*response)
         return cast(np.ndarray, response)
 
 
-def get_z_between_points(point_1, point_2, point):
-    """Get z value on a 2d point between two 3d points.
+def get_z_between_points(point_1: PointProtocol, point_2: PointProtocol, point: PointProtocol) -> float:
+    """Get z value on a 2d point between two 3d points."""
 
-    Todo:
-     - make minimal point typehint dataclass
-
-    """
     x1 = point_1[0]
     x2 = point_2[0]
     y1 = point_1[1]
@@ -194,13 +223,9 @@ def get_z_between_points(point_1, point_2, point):
     return z
 
 
-def get_y_between_points(point_1, point_2, x):
-    """Get the y value between two 2d points given a x value.
+def get_y_between_points(point_1: PointProtocol, point_2: PointProtocol, x: float) -> float:
+    """Get the y value between two 2d points given a x value."""
 
-    Todo:
-     - make minimal point typehint dataclass
-
-    """
     x1 = point_1[0]
     x2 = point_2[0]
     y1 = point_1[1]
