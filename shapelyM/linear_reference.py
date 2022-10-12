@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from shapelyM.helpers import check_point_between_points, project_point_on_line, PointProtocol, MinimalPoint
+from shapelyM.helpers import check_point_between_points, project_point_on_line, PointProtocol, MinimalPoint, \
+    get_z_between_points
 from shapelyM.measurePoint import MeasurePoint
 
 
@@ -11,19 +12,6 @@ def _correct_overshoot(
     if not check_point_between_points(point_1, point_2, point_on_line_2d):
         point_on_line_2d = MinimalPoint(point_2.x, point_2.y)
     return point_on_line_2d
-
-
-def _set_z_on_percentage(point_1, point_2, point_on_line_2d) -> MeasurePoint:
-    point = MeasurePoint(point_on_line_2d.x, point_on_line_2d.y)
-    start_distance = point.distance(point_1, force_2d=True)
-    end_distance = point_1.distance(point_2, force_2d=True)
-    try:
-        percentage = start_distance / end_distance
-    except ZeroDivisionError:
-        percentage = 0
-
-    point.z = point_1.z + ((point_2.z - point_1.z) * percentage)
-    return point
 
 
 def linear_reference_point_on_line(
@@ -38,10 +26,10 @@ def linear_reference_point_on_line(
     """
 
     if point_1.z is not None and point_2.z is not None and point_to_project.z is not None:
-        point_on_line_2d = project_point_on_line(point_1, point_2, point_to_project)
-        point_on_line_2d = _correct_overshoot(point_1, point_2, point_on_line_2d)
-        point_on_line_3d = _set_z_on_percentage(point_1, point_2, point_on_line_2d)
-        return point_on_line_3d
+        new_point = project_point_on_line(point_1, point_2, point_to_project)
+        new_point = _correct_overshoot(point_1, point_2, new_point)
+        new_point.z = get_z_between_points(point_1, point_2, new_point)
+        return new_point
 
     else:
         point_on_line_2d = project_point_on_line(point_1, point_2, point_to_project)
