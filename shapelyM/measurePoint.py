@@ -10,7 +10,7 @@ from shapelyM.helpers import MinimalPoint
 
 class MeasurePoint:
     def __init__(self, x: float, y: float, z: float = None, m: float = None):
-        """........
+        """..........
 
         :param x:
         :param y:
