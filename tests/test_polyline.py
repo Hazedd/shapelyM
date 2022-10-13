@@ -4,7 +4,7 @@ import pytest
 from shapely.geometry import LineString, Point
 from shapely.ops import linemerge
 
-from shapelyM.lineString import LineStringMeasure
+from shapelyM.measureLineString import MeasureLineString
 from shapelyM.measurePoint import MeasurePoint
 
 
@@ -14,19 +14,19 @@ class TestSimplePolyline:
     @pytest.fixture
     def simple_2d_line(self):
         line_data = [[3, 0], [3, 10], [3, 20], [3, 30]]
-        fixture = LineStringMeasure(line_data)
+        fixture = MeasureLineString(line_data)
         return fixture
 
     @pytest.fixture
     def simple_3d_line(self):
         line_data = [[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]]
-        fixture = LineStringMeasure(line_data)
+        fixture = MeasureLineString(line_data)
         return fixture
 
     @pytest.fixture
     def simple_3d_line_z_increase(self):
         line_data = [[3, 0, 0], [3, 10, 10], [3, 20, 20], [3, 30, 30]]
-        fixture = LineStringMeasure(line_data)
+        fixture = MeasureLineString(line_data)
         return fixture
 
     def test_init_2d(self, simple_2d_line):
@@ -160,7 +160,7 @@ class TestComplexPolyline:
 
     def _create_line(self, string_data):
         line_data = self._split_string_data(string_data)
-        return LineStringMeasure(line_data)
+        return MeasureLineString(line_data)
 
     @pytest.fixture
     def complex_3d_line(self):
@@ -222,7 +222,7 @@ class TestComplexPolyline:
         # reverse, to make sure its in right dwaring direction
         rail_con = LineString(list(rail_con.coords)[::-1])
 
-        return LineStringMeasure([item for item in rail_con.coords]), rail_con
+        return MeasureLineString([item for item in rail_con.coords]), rail_con
 
     def test_complex_3d_line_length_2d(self, complex_3d_line):
         shape = complex_3d_line.shapely
@@ -257,13 +257,13 @@ class TestSideOfPolyline:
     @pytest.fixture
     def simple_3d_line_x(self):
         line_data = [[3, 0, 0], [3, 10, 10], [3, 20, 20], [3, 30, 30]]
-        fixture = LineStringMeasure(line_data)
+        fixture = MeasureLineString(line_data)
         return fixture
 
     @pytest.fixture
     def simple_3d_line_y(self):
         line_data = [[0, 3, 0], [10, 3, 10], [20, 3, 20], [30, 3, 30]]
-        fixture = LineStringMeasure(line_data)
+        fixture = MeasureLineString(line_data)
         return fixture
 
     #

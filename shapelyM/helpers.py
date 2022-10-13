@@ -9,7 +9,7 @@ import numpy as np
 from shapely.geometry import LineString, Point
 
 
-class PointProtocol(Protocol):
+class MinimalPointProtocol(Protocol):
     x: float
     y: float
     z: Optional[float]
@@ -35,7 +35,7 @@ class MinimalPoint:
     #     pass
 
 
-def get_shapley_point_from_minimal_point(point: PointProtocol, force_2d: bool = None) -> Point:
+def get_shapley_point_from_minimal_point(point: MinimalPointProtocol, force_2d: bool = None) -> Point:
     if point.z and not force_2d:
         return Point(point.x, point.y, point.z)
     else:
@@ -43,9 +43,9 @@ def get_shapley_point_from_minimal_point(point: PointProtocol, force_2d: bool = 
 
 
 def check_point_between_points(
-    point_1: PointProtocol,
-    point_2: PointProtocol,
-    point_to_check: PointProtocol,
+    point_1: MinimalPointProtocol,
+    point_2: MinimalPointProtocol,
+    point_to_check: MinimalPointProtocol,
 ) -> bool:
     """Methode to check if a 2d point is between two other 2d points.
 
@@ -81,7 +81,7 @@ def check_point_between_points(
     return True
 
 
-def get_azimuth_from_points(point1: PointProtocol, point2: PointProtocol) -> float:
+def get_azimuth_from_points(point1: MinimalPointProtocol, point2: MinimalPointProtocol) -> float:
     """Calculates the azimuth (rotation, north == 0) by two 2d points.
 
     :param point1: shapely.geometry.Point or shapelyM.MeasurePoint
@@ -163,9 +163,9 @@ def determinate_left_right_on_line(
 
 
 def project_point_on_line(
-    point_1: PointProtocol,
-    point_2: PointProtocol,
-    point_to_project: PointProtocol,
+    point_1: MinimalPointProtocol,
+    point_2: MinimalPointProtocol,
+    point_to_project: MinimalPointProtocol,
     belong_to_segment: bool = False,
 ) -> MinimalPoint:
     """Project a point on a line returning a MinimalPoint on the line.
@@ -204,7 +204,9 @@ def project_point_on_line(
         return MinimalPoint(*coordinates)
 
 
-def get_z_between_points(point_1: PointProtocol, point_2: PointProtocol, point: PointProtocol) -> float:
+def get_z_between_points(
+    point_1: MinimalPointProtocol, point_2: MinimalPointProtocol, point: MinimalPointProtocol
+) -> float:
     """Get z value on a 2d point between two 3d points."""
     x1, y1, z1 = point_1.x, point_1.y, point_1.z
     x2, y2, z2 = point_2.x, point_2.y, point_2.z
@@ -219,7 +221,7 @@ def get_z_between_points(point_1: PointProtocol, point_2: PointProtocol, point: 
     return z
 
 
-# def get_y_between_points(point_1: PointProtocol, point_2: PointProtocol, x: float) -> float:
+# def get_y_between_points(point_1: MinimalPointProtocol, point_2: MinimalPointProtocol, x: float) -> float:
 #     """Get the y value between two 2d points given a x value."""
 #     x1, y1 = point_1.z, point_1.y
 #     x2, y2 = point_2.x, point_2.y

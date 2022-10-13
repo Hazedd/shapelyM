@@ -9,7 +9,7 @@ from shapelyM.linear_reference import get_line_projection
 from shapelyM.measurePoint import MeasurePoint
 
 
-class LineStringMeasure:
+class MeasureLineString:
     def __init__(self, coordinates: List[List[float]]):
         """..........
 

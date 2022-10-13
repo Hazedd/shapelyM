@@ -23,13 +23,14 @@ pip install shapelyM
 ![alt text](https://raw.githubusercontent.com/Hazedd/shapelyM/master/assets/3d_view.png)
 
 ## Usage:
+
 ```python
 from shapely.geometry import Point
-from shapelyM import LineStringMeasure, MeasurePoint
+from shapelyM import MeasureLineString, MeasurePoint
 ```
 
 ```python
-line_measure = LineStringMeasure([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]])
+line_measure = MeasureLineString([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]])
 projection = line_measure.project(Point(0, 5, 0))
 # or:
 # projection = line_measure.project(MeasurePoint(0, 5, 0))
@@ -72,7 +73,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] version 0.1.0-alpha
 - [ ] implement "point on side of line"
 - [ ] version 0.1.0-beta
-- [ ] implement LineStringMeasure from shapely Linestring
+- [ ] implement MeasureLineString from shapely Linestring
 - [ ] return profile line on from and to measures as shapely
 - [ ] refactor
 - [ ] version 0.2.0-alpha 

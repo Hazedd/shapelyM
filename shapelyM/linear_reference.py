@@ -8,7 +8,7 @@ from shapely.geometry import LineString, Point
 from shapelyM.helpers import (
     LeftRightOnLineEnum,
     MinimalPoint,
-    PointProtocol,
+    MinimalPointProtocol,
     check_point_between_points,
     determinate_left_right_on_line,
     get_azimuth_from_points,
@@ -39,12 +39,12 @@ class LineProjection:
 
 
 def _correct_overshoot(
-    point_1: PointProtocol, point_2: PointProtocol, point_on_line_2d: PointProtocol
+    point_1: MinimalPointProtocol, point_2: MinimalPointProtocol, point_on_line_2d: MinimalPointProtocol
 ) -> MinimalPoint:
     """
     If not between the points, we assume it overshoots, and sets last point as point on line.
 
-     :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point_2: shapely.geometry.Point or shapelyM.MeasurePoint
     :param point_to_project: shapely.geometry.Point or shapelyM.MeasurePoint
     :returns
@@ -56,7 +56,7 @@ def _correct_overshoot(
 
 
 def _get_3d_point_on_line(
-    point_1: PointProtocol, point_2: PointProtocol, point_to_project: PointProtocol
+    point_1: MinimalPointProtocol, point_2: MinimalPointProtocol, point_to_project: MinimalPointProtocol
 ) -> MeasurePoint:
     """Get 2d or 3d point between 2 points.
 
@@ -83,6 +83,7 @@ def get_line_projection(
     point: MeasurePoint,
     point_on_line_overrule: Optional[MeasurePoint] = None,
     azimuth: Optional[float] = None,
+    debug: bool = False,
 ) -> LineProjection:
     """.........
 
@@ -91,6 +92,8 @@ def get_line_projection(
     :param point:
     :param point_on_line_overrule:
     :param azimuth:
+    :param debug:
+
     """
     point_on_line = _get_3d_point_on_line(line_point_1, line_point_2, point)
     distance_to_line_2d = point.distance(point_on_line, force_2d=True)
@@ -114,7 +117,7 @@ def get_line_projection(
         LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]]),
     )
 
-    return LineProjection(
+    result = LineProjection(
         point=point,
         azimuth=azimuth,
         side_of_line=side_of_line,
@@ -122,4 +125,25 @@ def get_line_projection(
         distance_to_line_2d=distance_to_line_2d,
         distance_to_line_3d=distance_to_line_3d,
         distance_along_line=distance_along_line,
+    )
+
+    if debug:
+        draw_projection_in_autocad(result)
+    return result
+
+
+def draw_projection_in_autocad(line_projection: LineProjection):
+    from debug.autocad import AutocadService
+
+    acad = AutocadService()
+    acad.DrawShapelyObject(line_projection.point.shapely)
+    acad.DrawText(f"{line_projection.side_of_line.value}", line_projection.point.shapely)
+    acad.DrawShapelyObject(line_projection.point_on_line.shapely)
+    acad.DrawShapelyObject(
+        LineString(
+            [
+                line_projection.point_on_line.shapely,
+                line_projection.point.shapely,
+            ]
+        )
     )
