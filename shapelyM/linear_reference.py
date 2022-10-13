@@ -3,17 +3,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from shapely.geometry import Point, LineString
+from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import (
+    LeftRightOnLineEnum,
     MinimalPoint,
     PointProtocol,
     check_point_between_points,
+    determinate_left_right_on_line,
+    get_azimuth_from_points,
     get_z_between_points,
     project_point_on_line,
-    LeftRightOnLineEnum,
-    get_azimuth_from_points,
-    determinate_left_right_on_line,
 )
 from shapelyM.measurePoint import MeasurePoint
 

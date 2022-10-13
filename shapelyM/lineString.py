@@ -5,8 +5,8 @@ from typing import Any, Dict, List, Optional
 from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import check_point_between_points, project_point_on_line
-from shapelyM.measurePoint import MeasurePoint
 from shapelyM.linear_reference import get_line_projection
+from shapelyM.measurePoint import MeasurePoint
 
 
 class LineStringMeasure:
