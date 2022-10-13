@@ -1,25 +1,58 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Optional
+
+from shapely.geometry import Point, LineString
+
 from shapelyM.helpers import (
     MinimalPoint,
     PointProtocol,
     check_point_between_points,
     get_z_between_points,
-    project_point_on_line,
+    project_point_on_line, LeftRightOnLineEnum, get_azimuth_from_points, determinate_left_right_on_line,
 )
 from shapelyM.measurePoint import MeasurePoint
+
+
+@dataclass
+class LineProjection:
+    """Xxxx.
+
+    Xxxxxxx.
+
+    Args:
+        name (type): xxx.
+
+    """
+
+    point: MeasurePoint
+    azimuth: float
+    side_of_line: LeftRightOnLineEnum
+    point_on_line: MeasurePoint
+    distance_to_line_2d: float
+    distance_to_line_3d: float
+    distance_along_line: float
 
 
 def _correct_overshoot(
     point_1: PointProtocol, point_2: PointProtocol, point_on_line_2d: PointProtocol
 ) -> MinimalPoint:
-    # if not between we assume it overshoots
+    """
+    If not between the points, we assume it overshoots, and sets last point as point on line.
+
+     :param point_1: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point_2: shapely.geometry.Point or shapelyM.MeasurePoint
+    :param point_to_project: shapely.geometry.Point or shapelyM.MeasurePoint
+    :returns
+    """
+    #
     if not check_point_between_points(point_1, point_2, point_on_line_2d):
         point_on_line_2d = MinimalPoint(point_2.x, point_2.y)
     return point_on_line_2d
 
 
-def linear_reference_point_on_line(
+def _get_3d_point_on_line(
     point_1: PointProtocol, point_2: PointProtocol, point_to_project: PointProtocol
 ) -> MeasurePoint:
     """Get 2d or 3d point between 2 points.
@@ -39,3 +72,51 @@ def linear_reference_point_on_line(
         new_point = project_point_on_line(point_1, point_2, point_to_project)
         new_point = _correct_overshoot(point_1, point_2, new_point)
         return MeasurePoint(*new_point.coords)
+
+
+def get_line_projection(
+        line_point_1: MeasurePoint,
+        line_point_2: MeasurePoint,
+        point: MeasurePoint,
+        point_on_line_overrule: Optional[MeasurePoint] = None,
+        azimuth: Optional[float] = None
+) -> LineProjection:
+    """.........
+
+    :param line_point_1:
+    :param line_point_2:
+    :param point:
+    :param point_on_line_overrule:
+    :param azimuth:
+    """
+    point_on_line = _get_3d_point_on_line(line_point_1, line_point_2, point)
+    distance_to_line_2d = point.distance(point_on_line, force_2d=True)
+    distance_to_line_3d = point.distance(point_on_line)
+
+    if point_on_line_overrule is not None:
+        point_on_line = point_on_line_overrule
+        distance_along_line = point_on_line_overrule.m
+    else:
+        point_on_line = point_on_line
+        distance_along_line = line_point_1.m + line_point_1.distance(point_on_line)
+
+    point_on_line.m = distance_along_line
+
+    if not azimuth:
+        azimuth = get_azimuth_from_points(line_point_1, line_point_2)
+
+    side_of_line = determinate_left_right_on_line(
+        Point([point.x, point.y]),
+        azimuth,
+        LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]]),
+    )
+
+    return LineProjection(
+        point=point,
+        azimuth=azimuth,
+        side_of_line=side_of_line,
+        point_on_line=point_on_line,
+        distance_to_line_2d=distance_to_line_2d,
+        distance_to_line_3d=distance_to_line_3d,
+        distance_along_line=distance_along_line,
+    )
