@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from shapely.geometry import LineString, Point
 
@@ -16,8 +16,8 @@ class MeasureLineString:
         Todo:
           - major refactor
         """
-        self.shapely: LineString = LineString(coordinates)
         self._line_coordinates_raw: List[List[float]] = coordinates
+        self.shapely: LineString = LineString(coordinates)
         self.line_measure_points: List[MeasurePoint] = self._calculate_length(coordinates)
         self.length_3d: Optional[float] = self._get_length()
         self.length_2d: Optional[float] = self._get_length(force_2d=True)
@@ -51,7 +51,7 @@ class MeasureLineString:
         return distance_idx
 
     def project(
-        self, point: Optional[MeasurePoint, Point], azimuth: Optional[float] = None
+        self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> get_line_projection:
         """..........
 
