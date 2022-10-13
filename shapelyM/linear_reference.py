@@ -10,7 +10,10 @@ from shapelyM.helpers import (
     PointProtocol,
     check_point_between_points,
     get_z_between_points,
-    project_point_on_line, LeftRightOnLineEnum, get_azimuth_from_points, determinate_left_right_on_line,
+    project_point_on_line,
+    LeftRightOnLineEnum,
+    get_azimuth_from_points,
+    determinate_left_right_on_line,
 )
 from shapelyM.measurePoint import MeasurePoint
 
@@ -75,11 +78,11 @@ def _get_3d_point_on_line(
 
 
 def get_line_projection(
-        line_point_1: MeasurePoint,
-        line_point_2: MeasurePoint,
-        point: MeasurePoint,
-        point_on_line_overrule: Optional[MeasurePoint] = None,
-        azimuth: Optional[float] = None
+    line_point_1: MeasurePoint,
+    line_point_2: MeasurePoint,
+    point: MeasurePoint,
+    point_on_line_overrule: Optional[MeasurePoint] = None,
+    azimuth: Optional[float] = None,
 ) -> LineProjection:
     """.........
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 DEBUG = False
 if DEBUG:  # pragma: no cover
     from debug.autocad import AutocadService
+
     acad = AutocadService()
 
 #
