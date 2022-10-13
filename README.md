@@ -15,9 +15,9 @@ pip install shapelyM
 
 ## Way of working
 1. project (3d) point on on 2d polyline (representation of a 3d polyline)
-2. get measure
-3. get height on polyline
-4. get side of line (by azimuth) 
+2. get height on polyline
+3. get measure
+4. get side of line (by azimuth)
 
 ### Visual
 ![alt text](https://raw.githubusercontent.com/Hazedd/shapelyM/master/assets/3d_view.png)
@@ -37,6 +37,7 @@ projection = line_measure.project(Point(0, 5, 0))
 ```
 
 ### Returns:
+shapelyM.LineProjection
 
 ```
 {
@@ -45,7 +46,7 @@ projection = line_measure.project(Point(0, 5, 0))
     'distance_to_line': 5.830951894845301, 
     'distance_to_line_2d': 3.0, 
     'distance_along_line': 7.0710678118654755, 
-    'side_of_line': 'Left'
+    'side_of_line': LeftRightOnLineEnum
 }
  ```
 
@@ -61,6 +62,15 @@ projection = line_measure.project(Point(0, 5, 0))
 }
 ```
 
+
+#### LeftRightOnLineEnum:
+```
+    left = "Left"
+    right = "Right"
+    on_vector = "On"
+```
+
+
 # Contribute
 Feel free to do some black math magic, add test or make suggestions.
 
@@ -71,16 +81,15 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] pipeline | make : type checking
 - [X] pipeline | deploy on pypi by GH A
 - [X] version 0.1.0-alpha
-- [ ] implement "point on side of line"
+- [X] implement "point on side of line"
+- [ ] refactor
 - [ ] version 0.1.0-beta
 - [ ] implement MeasureLineString from shapely Linestring
+- [ ] return profile line on from measure as shapely
 - [ ] return profile line on from and to measures as shapely
 - [ ] refactor
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
-
-- [ ] ....
-- [ ] ....
 - [ ] 100% test coverage
 - [ ] version 1.0.0
 

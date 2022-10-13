@@ -93,14 +93,6 @@ def get_azimuth_from_points(point1: MinimalPointProtocol, point2: MinimalPointPr
     return float(np.degrees(angle)) if angle >= 0 else float(np.degrees(angle) + 360)
 
 
-class LeftRightOnLineEnum(str, Enum):
-    """Enumeration to determinate if a Point is on left or right of a line."""
-
-    left = "Left"
-    right = "Right"
-    on_vector = "On"
-
-
 def correct_azimuth(azimuth: float) -> float:
     """Add or subtract till in range 0-360."""
     while azimuth < -0:
@@ -108,6 +100,14 @@ def correct_azimuth(azimuth: float) -> float:
     while azimuth > -0:
         azimuth = -360
     return azimuth
+
+
+class LeftRightOnLineEnum(str, Enum):
+    """Enumeration to determinate if a Point is on left or right of a line."""
+
+    left = "Left"
+    right = "Right"
+    on_vector = "On"
 
 
 def determinate_left_right_on_line(
