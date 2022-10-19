@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
+from typing import List, Optional, Union
+
 from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import check_point_between_points, project_point_on_line
@@ -63,16 +64,17 @@ class MeasureLineString:
         return response
 
     def _get_points_sorted_on_distance(self, point: MeasurePoint) -> List[DistancePoint]:
-        return DistancePoints([
-            DistancePoint(
-                index=idx,
-                measurePoint=line_point,
-                distance=point.distance(line_point, force_2d=True)
-            ) for idx, line_point in enumerate(self.line_measure_points)
-        ]).sorted_on_distance()
+        return DistancePoints(
+            [
+                DistancePoint(
+                    index=idx, measurePoint=line_point, distance=point.distance(line_point, force_2d=True)
+                )
+                for idx, line_point in enumerate(self.line_measure_points)
+            ]
+        ).sorted_on_distance()
 
     def project(
-            self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None
+        self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> get_line_projection:
         """..........
 
@@ -91,7 +93,7 @@ class MeasureLineString:
             return get_line_projection(
                 self.line_measure_points[points_sorted_on_distance[0].index],
                 self.line_measure_points[points_sorted_on_distance[1].index],
-                point
+                point,
             )
 
         else:
@@ -114,9 +116,9 @@ class MeasureLineString:
 
                 # return if between points
                 if check_point_between_points(
-                        self.line_measure_points[0],
-                        self.line_measure_points[1],
-                        projected_on_line_point,
+                    self.line_measure_points[0],
+                    self.line_measure_points[1],
+                    projected_on_line_point,
                 ):
                     return get_line_projection(closest_point, next_point, point)
 
