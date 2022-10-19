@@ -82,7 +82,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] pipeline | deploy on pypi by GH A
 - [X] version 0.1.0-alpha
 - [X] implement "point on side of line"
-- [ ] refactor
+- [X] refactor
 - [ ] version 0.1.0-beta
 - [ ] implement MeasureLineString from shapely Linestring
 - [ ] return profile line on from measure as shapely

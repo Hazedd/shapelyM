@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Union
-
+from dataclasses import dataclass
 from shapely.geometry import LineString, Point
 
 from shapelyM.helpers import check_point_between_points, project_point_on_line
@@ -9,12 +9,32 @@ from shapelyM.linear_reference import get_line_projection
 from shapelyM.measurePoint import MeasurePoint
 
 
+@dataclass
+class DistancePoint:
+    index: str
+    measurePoint: MeasurePoint
+    distance: float
+
+
+@dataclass
+class DistancePoints:
+    values: List[DistancePoint]
+
+    def sorted_on_distance(self) -> List[DistancePoint]:
+        self.values.sort(key=lambda x: x.distance)
+        return self.values
+
+
 class MeasureLineString:
     def __init__(self, coordinates: List[List[float]]):
         """..........
 
         Todo:
-          - major refactor
+          - major refactor / redesign
+          - support scaled measure lines
+          - cut linestring by measure and functional direction
+          - get profile by from measures and functional direction
+
         """
         self._line_coordinates_raw: List[List[float]] = coordinates
         self.shapely: LineString = LineString(coordinates)
@@ -42,16 +62,17 @@ class MeasureLineString:
             response.append(MeasurePoint(*line_point.coordinate_list(), m=_length))
         return response
 
-    def _get_distance_idx_dict(self, point: MeasurePoint) -> Dict[str, List[Any]]:
-        distance_idx = [
-            [point.distance(line_point, force_2d=True), idx, line_point]
-            for idx, line_point in enumerate(self.line_measure_points)
-        ]
-        distance_idx.sort(key=lambda x: x[0])
-        return distance_idx
+    def _get_points_sorted_on_distance(self, point: MeasurePoint) -> List[DistancePoint]:
+        return DistancePoints([
+            DistancePoint(
+                index=idx,
+                measurePoint=line_point,
+                distance=point.distance(line_point, force_2d=True)
+            ) for idx, line_point in enumerate(self.line_measure_points)
+        ]).sorted_on_distance()
 
     def project(
-        self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None
+            self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None
     ) -> get_line_projection:
         """..........
 
@@ -62,41 +83,44 @@ class MeasureLineString:
         if isinstance(point, Point):
             point = MeasurePoint(*point.coords[0])
 
-        distance_idx = self._get_distance_idx_dict(point)
-        idx = int(distance_idx[0][1])
+        points_sorted_on_distance = self._get_points_sorted_on_distance(point)
+        closed_point_index = points_sorted_on_distance[0].index
 
-        if distance_idx[0][0] == distance_idx[1][0]:
-            l_p1 = self.line_measure_points[distance_idx[0][1]]
-            l_p2 = self.line_measure_points[distance_idx[1][1]]
-            # point exactly in the middle of the line
-            return get_line_projection(l_p1, l_p2, point)
+        # exactly in the middle of 2 points
+        if points_sorted_on_distance[0].distance == points_sorted_on_distance[1].distance:
+            return get_line_projection(
+                self.line_measure_points[points_sorted_on_distance[0].index],
+                self.line_measure_points[points_sorted_on_distance[1].index],
+                point
+            )
 
         else:
-            closest_point = self.line_measure_points[idx]
+            closest_point = self.line_measure_points[closed_point_index]
 
             previous_point = None
-            if idx != 0:
-                previous_point = self.line_measure_points[idx - 1]
+            if closed_point_index != 0:
+                previous_point = self.line_measure_points[closed_point_index - 1]
 
             next_point = None
-            if idx + 1 != len(self.line_measure_points):
-                next_point = self.line_measure_points[idx + 1]
+            if closed_point_index + 1 != len(self.line_measure_points):
+                next_point = self.line_measure_points[closed_point_index + 1]
 
             if not previous_point:
+                # should be on first part of the line
                 projected_on_line = project_point_on_line(
-                    closest_point, self.line_measure_points[idx + 1], point
+                    closest_point, self.line_measure_points[closed_point_index + 1], point
                 ).coords
                 projected_on_line_point = MeasurePoint(*projected_on_line)
 
-                # on first part of the line
+                # return if between points
                 if check_point_between_points(
-                    self.line_measure_points[0],
-                    self.line_measure_points[1],
-                    projected_on_line_point,
+                        self.line_measure_points[0],
+                        self.line_measure_points[1],
+                        projected_on_line_point,
                 ):
                     return get_line_projection(closest_point, next_point, point)
 
-                # point in front of the line: undershoot
+                # else point undershoot line return first point
                 return get_line_projection(
                     self.line_measure_points[0],
                     self.line_measure_points[1],
@@ -105,7 +129,7 @@ class MeasureLineString:
                 )
 
             elif not next_point:
-                # somewhere on last part of line..
+                # end of the line or overshoot, so force last point
                 return get_line_projection(previous_point, closest_point, point)
 
             else:
@@ -130,3 +154,6 @@ class MeasureLineString:
                 else:
                     # on vertices
                     return get_line_projection(closest_point, next_point, point)
+
+    def _get_line(self):
+        pass
