@@ -83,6 +83,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [ ] version 0.1.0-beta
 - [ ] refactor
 - [ ] mkdocs as documentation
+- [ ] clear commit history
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
 - [ ] 100% test coverage
