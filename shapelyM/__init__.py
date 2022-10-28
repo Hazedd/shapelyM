@@ -1,6 +1,6 @@
 from typing import Any, List
 
-__version__ = "0.0.5-beta2"
+__version__ = "0.0.6-dev1"
 
 from shapelyM.linear_reference import LineProjection
 from shapelyM.measureLineString import MeasureLineString
