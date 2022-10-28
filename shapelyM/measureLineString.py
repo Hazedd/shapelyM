@@ -5,7 +5,8 @@ from typing import List, Optional, Union
 
 from shapely.geometry import LineString, Point
 
-from shapelyM.helpers import check_point_between_points, project_point_on_line
+from shapelyM.helpers import check_point_between_points, project_point_on_line, cut, cut_piece, get_z_between_points, \
+    MinimalPoint
 from shapelyM.linear_reference import get_line_projection
 from shapelyM.measurePoint import MeasurePoint
 
@@ -28,7 +29,7 @@ class DistancePoints:
 
 class MeasureLineString:
     def __init__(self, coordinates: List[List[float]]):
-        """..........
+        """First implementation of main linestring object.
 
         Todo:
           - major refactor / redesign
@@ -38,7 +39,12 @@ class MeasureLineString:
 
         """
         self._line_coordinates_raw: List[List[float]] = coordinates
-        self.shapely: LineString = LineString(coordinates)
+        if len(coordinates[0]) > 3:
+            # todo: add parameter to see it's a m linestring
+            self.shapely: LineString = LineString([item[:3] for item in coordinates])
+        else:
+            self.shapely: LineString = LineString(coordinates)
+
         self.line_measure_points: List[MeasurePoint] = self._calculate_length(coordinates)
         self.length_3d: Optional[float] = self._get_length()
         self.length_2d: Optional[float] = self._get_length(force_2d=True)
@@ -56,10 +62,13 @@ class MeasureLineString:
             line_point = MeasurePoint(*item)
             if idx != 0:
                 line_point_min_1 = MeasurePoint(*coordinates[idx - 1])
-                if force_2d:
-                    _length = _length + line_point.distance(line_point_min_1, force_2d=True)
+                if line_point.m == None:
+                    if force_2d:
+                        _length = _length + line_point.distance(line_point_min_1, force_2d=True)
+                    else:
+                        _length = _length + line_point.distance(line_point_min_1)
                 else:
-                    _length = _length + line_point.distance(line_point_min_1)
+                    _length = line_point.m
             response.append(MeasurePoint(*line_point.coordinate_list(), m=_length))
         return response
 
@@ -157,5 +166,58 @@ class MeasureLineString:
                     # on vertices
                     return get_line_projection(closest_point, next_point, point)
 
-    def _get_line(self):
-        pass
+    def get_line_m(self, measure: float):
+        return self._cut(self, measure)
+
+    def get_profile(self, from_measure: float, to_measure: float):
+        pre_cut = self._cut(self, from_measure)[1]
+        result = self._cut(pre_cut, (to_measure - from_measure))[0]
+        return result
+
+    @staticmethod
+    def _cut(line: MeasureLineString, measure: float) -> List[MeasureLineString]:
+
+        if measure <= 0.0 or measure >= line.line_measure_points[-1].m:
+            return [line]
+
+        coords = line.line_measure_points
+        for i, p in enumerate(coords):
+            pd = p.m
+
+            if pd == measure:
+                return [
+                    MeasureLineString(coords[:i + 1]),
+                    MeasureLineString(coords[i:])]
+
+            if pd > measure:
+                # get total distance between points 3d
+                line_segment_length = coords[i - 1].distance(coords[i])
+
+                # get previous measure and correct measure length
+                segment_measure = measure - coords[i - 1].m
+                distance_along_line = segment_measure / line_segment_length
+
+                # make 2d line
+                line = LineString([coords[i - 1].coordinate_list()[:2], coords[i].coordinate_list()[:2]])
+
+                # project
+                point_along_line = line.interpolate(distance_along_line)
+                point_along_line = MinimalPoint(point_along_line.x, point_along_line.y)
+
+                # get z
+                tester = MinimalPoint(point_along_line.x, point_along_line.y)
+                point_along_line.z = get_z_between_points(coords[i - 1], coords[i], tester)
+
+                # make 3d line form start
+                point_list = [item.coordinate_list() for idx, item in enumerate(coords) if idx < i]
+                point_list.append([point_along_line.x, point_along_line.y, point_along_line.z])
+                line_1 = MeasureLineString(point_list)
+
+                # make 3d line to end
+                point_list = [[point_along_line.x, point_along_line.y, point_along_line.z]]
+                points_to_end = [item.coordinate_list() for idx, item in enumerate(coords) if idx >= i]
+                point_list.extend(points_to_end)
+                line_2 = MeasureLineString(point_list)
+
+                return [line_1, line_2]
+

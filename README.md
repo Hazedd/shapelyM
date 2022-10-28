@@ -58,7 +58,7 @@ shapelyM.LineProjection
     'y': 5.0,
     'z': 5.0,
     'm': 7.0710678118654755,
-    'shapely': shapely.geometry.point.Point
+    'shapely': shapely.geometry.Point
 }
 ```
 
@@ -67,7 +67,7 @@ shapelyM.LineProjection
 ```
     left = "Left"
     right = "Right"
-    on_vector = "On"
+    on = "On Vector"
 ```
 
 
@@ -75,19 +75,13 @@ shapelyM.LineProjection
 Feel free to do some black math magic, add test or make suggestions.
 
 ## Roadmap:
-- [X] make prototype work
-- [X] bumpversion including release type
-- [X] pipeline | make : black
-- [X] pipeline | make : type checking
-- [X] pipeline | deploy on pypi by GH A
-- [X] version 0.1.0-alpha
+- [X] version 0.0.1-alpha
 - [X] implement "point on side of line"
-- [X] refactor
+- [ ] refactor
 - [ ] version 0.1.0-beta
 - [ ] implement MeasureLineString from shapely Linestring
 - [ ] return profile line on from measure as shapely
 - [ ] return profile line on from and to measures as shapely
-- [ ] refactor
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
 - [ ] 100% test coverage

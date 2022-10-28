@@ -20,14 +20,7 @@ from shapelyM.measurePoint import MeasurePoint
 
 @dataclass
 class LineProjection:
-    """Xxxx.
-
-    Xxxxxxx.
-
-    Args:
-        name (type): xxx.
-
-    """
+    """Response of a projection containing all info."""
 
     point: MeasurePoint
     azimuth: float
@@ -85,14 +78,16 @@ def get_line_projection(
     azimuth: Optional[float] = None,
     debug: bool = False,
 ) -> LineProjection:
-    """.........
+    """Methode to make a line projection given 2 points and a point to project.
 
-    :param line_point_1:
-    :param line_point_2:
-    :param point:
-    :param point_on_line_overrule:
-    :param azimuth:
-    :param debug:
+    Projection on line point can an be overruled for overshoot/undershoot... could be improved :/
+
+    :param line_point_1: First point of the line
+    :param line_point_2: Last point of the line
+    :param point: Point to project on line.
+    :param point_on_line_overrule: overrule point on line
+    :param azimuth: optional rotation for ....
+    :param debug: draw in autocad todo: remove before 0.1.0 release
 
     """
     point_on_line = _get_3d_point_on_line(line_point_1, line_point_2, point)
@@ -133,6 +128,7 @@ def get_line_projection(
 
 
 def draw_projection_in_autocad(line_projection: LineProjection):
+    """Debug methode to draw line_projection in autocad."""
     from debug.autocad import AutocadService
 
     acad = AutocadService()

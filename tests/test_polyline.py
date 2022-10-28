@@ -269,6 +269,12 @@ class TestSideOfPolyline:
     #
     # 6, 6, -7
 
+    @pytest.fixture
+    def simple_3d_line_m(self):
+        line_data = [[3, 0, 0, 0], [3, 10, 20, 100], [3, 20, 40, 200], [3, 30, 80, 300]]
+        fixture = MeasureLineString(line_data)
+        return fixture
+
     @pytest.mark.parametrize(
         "points",
         [
@@ -281,6 +287,20 @@ class TestSideOfPolyline:
     def test_right_of_line_x(self, simple_3d_line_x, points):
         tester = simple_3d_line_x.project(Point(points))
         assert tester.side_of_line == "Right"
+
+    @pytest.mark.parametrize(
+        "measure",
+        [
+            45,
+            150,
+            256,
+            300,
+            350
+        ],
+    )
+    def test_m_line_measures(self, simple_3d_line_m, measure):
+        tester1 = simple_3d_line_m.get_line_m(measure)
+        tester2 = simple_3d_line_m.get_profile(45, 65)
 
     # @pytest.mark.parametrize(
     #     "points", [
