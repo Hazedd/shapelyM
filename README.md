@@ -6,6 +6,8 @@ Shapely is a BSD-licensed Python package for manipulation and analysis of planar
 
 ShapelyM can be used to linear referencing in 3D and is designed to work (without) shapely.
 
+### Warning you use this, make sure to pin the version, api is far from stable!
+
 ## Installation
 
 ```bash
@@ -80,6 +82,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] return profile line on from measure as shapely
 - [X] return profile line on from and to measures as shapely
 - [ ] proper support for m values 
+- [ ] stable main api
 - [ ] version 0.1.0-beta
 - [ ] refactor
 - [ ] mkdocs as documentation
