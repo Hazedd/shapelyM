@@ -75,13 +75,14 @@ shapelyM.LineProjection
 Feel free to do some black math magic, add test or make suggestions.
 
 ## Roadmap:
-- [X] version 0.0.1-alpha
+- [X] version 0.0.3-alpha
 - [X] implement "point on side of line"
-- [ ] refactor
+- [X] return profile line on from measure as shapely
+- [X] return profile line on from and to measures as shapely
+- [ ] proper support for m values 
 - [ ] version 0.1.0-beta
-- [ ] implement MeasureLineString from shapely Linestring
-- [ ] return profile line on from measure as shapely
-- [ ] return profile line on from and to measures as shapely
+- [ ] refactor
+- [ ] mkdocs as documentation
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
 - [ ] 100% test coverage
