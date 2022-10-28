@@ -19,6 +19,7 @@ class MinimalPointProtocol(Protocol):
 @dataclass
 class MinimalPoint:
     """Minimal point optional z value."""
+
     x: float
     y: float
     z: Optional[float] = None
@@ -238,39 +239,39 @@ def get_z_between_points(
 #
 #     return y
 
-
-def cut(line: LineString, distance: float) -> List[LineString]:
-    # todo: refactor to use measure instead of coords
-
-    # https://gist.github.com/sgillies/465156#file_cut.py
-    # Cuts a line in two at a distance from its starting point
-    if distance <= 0.0 or distance >= line.length:
-        return [LineString(line)]
-    coords = list(line.coords)
-    for i, p in enumerate(coords):
-        pd = line.project(Point(p))
-        if pd == distance:
-            return [
-                LineString(coords[:i+1]),
-                LineString(coords[i:])]
-        if pd > distance:
-            cp = line.interpolate(distance)
-            try:
-                return [
-                    LineString(coords[:i] + [(cp.x, cp.y, cp.z)]),
-                    LineString([(cp.x, cp.y, cp.z)] + coords[i:])
-                ]
-            except:
-                return [
-                    LineString(coords[:i] + [(cp.x, cp.y)]),
-                    LineString([(cp.x, cp.y)] + coords[i:])
-                ]
-
-
-def cut_piece(line: LineString, distance: float, length: float):
-    """ From a linestring, this cuts a piece of length lgth at distance.
-    Needs cut(line,distance) func from above ;-)
-    """
-    precut = cut(line, distance)[1]
-    result = cut(precut, length)[0]
-    return result
+#
+# def cut(line: LineString, distance: float) -> List[LineString]:
+#     # todo: refactor to use measure instead of coords
+#
+#     # https://gist.github.com/sgillies/465156#file_cut.py
+#     # Cuts a line in two at a distance from its starting point
+#     if distance <= 0.0 or distance >= line.length:
+#         return [LineString(line)]
+#     coords = list(line.coords)
+#     for i, p in enumerate(coords):
+#         pd = line.project(Point(p))
+#         if pd == distance:
+#             return [
+#                 LineString(coords[:i+1]),
+#                 LineString(coords[i:])]
+#         if pd > distance:
+#             cp = line.interpolate(distance)
+#             try:
+#                 return [
+#                     LineString(coords[:i] + [(cp.x, cp.y, cp.z)]),
+#                     LineString([(cp.x, cp.y, cp.z)] + coords[i:])
+#                 ]
+#             except:
+#                 return [
+#                     LineString(coords[:i] + [(cp.x, cp.y)]),
+#                     LineString([(cp.x, cp.y)] + coords[i:])
+#                 ]
+#
+#
+# def cut_piece(line: LineString, distance: float, length: float):
+#     """ From a linestring, this cuts a piece of length lgth at distance.
+#     Needs cut(line,distance) func from above ;-)
+#     """
+#     precut = cut(line, distance)[1]
+#     result = cut(precut, length)[0]
+#     return result

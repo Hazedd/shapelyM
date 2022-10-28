@@ -290,17 +290,11 @@ class TestSideOfPolyline:
 
     @pytest.mark.parametrize(
         "measure",
-        [
-            45,
-            150,
-            256,
-            300,
-            350
-        ],
+        [45, 150, 256, 300, 350],
     )
     def test_m_line_measures(self, simple_3d_line_m, measure):
-        tester1 = simple_3d_line_m.get_line_m(measure)
-        tester2 = simple_3d_line_m.get_profile(45, 65)
+        simple_3d_line_m.get_line_m(measure)
+        simple_3d_line_m.get_profile(45, 65)
 
     # @pytest.mark.parametrize(
     #     "points", [

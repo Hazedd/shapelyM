@@ -5,8 +5,12 @@ from typing import List, Optional, Union
 
 from shapely.geometry import LineString, Point
 
-from shapelyM.helpers import check_point_between_points, project_point_on_line, cut, cut_piece, get_z_between_points, \
-    MinimalPoint
+from shapelyM.helpers import (
+    MinimalPoint,
+    check_point_between_points,
+    get_z_between_points,
+    project_point_on_line,
+)
 from shapelyM.linear_reference import get_line_projection
 from shapelyM.measurePoint import MeasurePoint
 
@@ -62,7 +66,7 @@ class MeasureLineString:
             line_point = MeasurePoint(*item)
             if idx != 0:
                 line_point_min_1 = MeasurePoint(*coordinates[idx - 1])
-                if line_point.m == None:
+                if line_point.m is None:
                     if force_2d:
                         _length = _length + line_point.distance(line_point_min_1, force_2d=True)
                     else:
@@ -185,9 +189,7 @@ class MeasureLineString:
             pd = p.m
 
             if pd == measure:
-                return [
-                    MeasureLineString(coords[:i + 1]),
-                    MeasureLineString(coords[i:])]
+                return [MeasureLineString(coords[: i + 1]), MeasureLineString(coords[i:])]
 
             if pd > measure:
                 # get total distance between points 3d
@@ -220,4 +222,3 @@ class MeasureLineString:
                 line_2 = MeasureLineString(point_list)
 
                 return [line_1, line_2]
-
