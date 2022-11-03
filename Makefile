@@ -4,7 +4,7 @@ install:
 	flit install --deps develop
 
 test:
-	pytest --cov=shapelyM/ --cov-report=term-missing --cov-fail-under=90
+	pytest --cov=shapelyM/ --cov-report=term-missing --cov-fail-under=70
 
 lint:
 	flake8 ./shapelyM ./tests

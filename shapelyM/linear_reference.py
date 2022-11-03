@@ -17,6 +17,8 @@ from shapelyM.helpers import (
 )
 from shapelyM.measurePoint import MeasurePoint
 
+# todo: make frozen
+
 
 @dataclass
 class LineProjection:

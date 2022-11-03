@@ -7,6 +7,8 @@ from shapely.geometry import Point
 
 from shapelyM.helpers import MinimalPoint
 
+# todo: make dataclass and frozen
+
 
 class MeasurePoint:
     def __init__(self, x: float, y: float, z: float = None, m: float = None):
@@ -23,7 +25,11 @@ class MeasurePoint:
         self.y = float(y)
         self.z = z
         self.m = m
-        self.shapely = Point(self.coordinate_list())
+        # self.shapely = Point(self.coordinate_list())
+
+    def shapely(self):
+        """Returns a shapely Point object."""
+        return Point(self.coordinate_list())
 
     def coordinate_list(self) -> List[float]:
         """Returns a list of coordinates."""
@@ -32,10 +38,10 @@ class MeasurePoint:
         return [self.x, self.y]
 
     def distance(self, point_geometry: MinimalPoint, force_2d: bool = False) -> float:
-        """Returns the (3D) distance given a MinimalPoint.
+        """Returns the (3D) distance to a MinimalPoint.
 
-        :param point_geometry: point object
-        :param force_2d: boolean to force a 2d distance
+        :param: point_geometry: MinimalPoint object
+        :param: force_2d: boolean to force a 2d distance
         """
         if self.z is not None and point_geometry.z is not None and force_2d is not True:
             return math.sqrt(
