@@ -37,7 +37,7 @@ class TestSimplePolyline:
 
     def test_length_2d(self, simple_2d_line):
         assert simple_2d_line.length_2d == 30
-        assert simple_2d_line.length_3d == 30
+        assert simple_2d_line.length_3d is None
 
     def test_length_3d(self, simple_3d_line):
         assert simple_3d_line.length_2d == 30

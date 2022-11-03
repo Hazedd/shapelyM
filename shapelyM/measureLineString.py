@@ -43,7 +43,11 @@ class MeasureLineString:
         self.shapely: LineString = LineString(self._get_xyz_from_coordinates(coordinates))
         self.line_measure_points: List[MeasurePoint] = self._measure_points_list_factory(coordinates)
         coordinates_xyz = self._get_xyz_from_coordinates(coordinates)
-        self.length_3d: float = self._get_length_by_geometry(coordinates_xyz)
+        if len(coordinates_xyz[0]) == 3:
+            self.length_3d: float = self._get_length_by_geometry(coordinates_xyz)
+        else:
+            self.length_3d: Optional[float] = None
+
         self.length_2d: float = self._get_length_by_geometry(coordinates_xyz, force_2d=True)
         self.length_measure: float = self.line_measure_points[-1].m
 

@@ -19,7 +19,7 @@ def test_2d_line():
 
     assert line.length_2d == 30
     assert line.shapely.length == line.length_2d
-    assert line.length_3d == 30  # todo: should be None
+    assert line.length_3d is None
     assert line.length_measure == 30
 
     # minimal project test, use center of lin segment and 2d point
@@ -31,12 +31,13 @@ def test_2d_line():
             assert projection.point_on_line.z is None
             assert projection.distance_along_line == y_
             assert projection.distance_to_line_2d == 3
-            assert projection.distance_to_line_3d == 3  # todo: should be none
+            assert projection.distance_to_line_3d is None
             assert projection.point_on_line.x == 3
             assert projection.point_on_line.y == y_
             assert projection.point_on_line.m == y_
 
     assert line.cut_on_measure(-1)[0] == line
+    # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(5)) == 2
     assert line.cut_on_measure(31)[0] == line
     assert line.cut_profile(3, 7).length_2d == 3
@@ -78,6 +79,7 @@ def test_3d_line():
             assert projection.point_on_line.m == expected_results[idx][0]
 
     assert line.cut_on_measure(-1)[0] == line
+    # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(5)) == 2
     assert line.cut_on_measure(86)[0] == line
 
@@ -95,7 +97,7 @@ def test_2d_line_m():
         assert line.line_measure_points[idx].m == coordinate[2]
 
     assert line.length_2d == 30
-    assert line.length_3d == 30  # todo: should be None
+    assert line.length_3d is None
     assert line.length_measure == 300
 
     try:
@@ -104,6 +106,7 @@ def test_2d_line_m():
         assert True
 
     assert line.cut_on_measure(-1)[0] == line
+    # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(50))
     assert line.cut_on_measure(301)[0] == line
 
@@ -130,6 +133,7 @@ def test_3d_line_m():
         assert True
 
     assert line.cut_on_measure(-1)[0] == line
+    # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(50))
     assert line.cut_on_measure(301)[0] == line
 

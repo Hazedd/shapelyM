@@ -94,7 +94,10 @@ def get_line_projection(
     """
     point_on_line = _get_3d_point_on_line(line_point_1, line_point_2, point)
     distance_to_line_2d = point.distance(point_on_line, force_2d=True)
-    distance_to_line_3d = point.distance(point_on_line)
+    if line_point_1.z is not None and line_point_2.z is not None and point.z is not None:
+        distance_to_line_3d = point.distance(point_on_line)
+    else:
+        distance_to_line_3d = None
 
     if point_on_line_overrule is not None:
         point_on_line = point_on_line_overrule
