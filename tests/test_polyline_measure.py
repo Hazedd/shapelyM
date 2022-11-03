@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from shapely.geometry import Point
 
-from shapelyM.measureLineString import MeasureLineStringMSupport
+from shapelyM.measureLineString import MeasureLineString
 
 # todo: split below to fixtures and smaller test cases in test class
 
@@ -10,7 +10,7 @@ from shapelyM.measureLineString import MeasureLineStringMSupport
 def test_2d_line():
     # minimal edge case 3 as offset, same level line segments only on y offset
     line_data = [[3, 0], [3, 10], [3, 20], [3, 30]]
-    line = MeasureLineStringMSupport(line_data)
+    line = MeasureLineString(line_data)
     assert line.m_given is False
 
     for idx, coordinate in enumerate(line_data):
@@ -36,19 +36,17 @@ def test_2d_line():
             assert projection.point_on_line.y == y_
             assert projection.point_on_line.m == y_
 
-    # tester_1 = line.cut_on_measure(-1)
-    # tester_2 = line.cut_on_measure(5)
-    # tester_3 = line.cut_on_measure(31)
-    #
-    # tester_4 = line.cut_profile(3, 7)
-    # print()
+    assert line.cut_on_measure(-1)[0] == line
+    assert len(line.cut_on_measure(5)) == 2
+    assert line.cut_on_measure(31)[0] == line
+    assert line.cut_profile(3, 7).length_2d == 3
 
 
 def test_3d_line():
     # minimal edge case 3 as offset, same level line segments only on y and z offset
     line_data = [[3, 0, 0], [3, 10, 20], [3, 20, 40], [3, 30, 80]]
     distance = [0, 22.360679774997898, 44.721359549995796, 85.95241580617241]
-    line = MeasureLineStringMSupport(line_data)
+    line = MeasureLineString(line_data)
     assert line.m_given is False
 
     for idx, coordinate in enumerate(line_data):
@@ -79,18 +77,17 @@ def test_3d_line():
             assert projection.point_on_line.y == y_
             assert projection.point_on_line.m == expected_results[idx][0]
 
-    # tester_1 = line.cut_on_measure(-1)
-    # tester_2 = line.cut_on_measure(5)
-    # tester_3 = line.cut_on_measure(31)
-    #
-    # tester_4 = line.cut_profile(3, 5)
-    # print()
+    assert line.cut_on_measure(-1)[0] == line
+    assert len(line.cut_on_measure(5)) == 2
+    assert line.cut_on_measure(86)[0] == line
+
+    assert line.cut_profile(3, 5).length_2d == 2
 
 
 def test_2d_line_m():
     # minimal edge case 3 as offset, same level line segments only on y offset, increasing m with 100
     line_data = [[3, 0, 0], [3, 10, 100], [3, 20, 200], [3, 30, 300]]
-    line = MeasureLineStringMSupport(line_data, m_given=True)
+    line = MeasureLineString(line_data, m_given=True)
     assert line.m_given is True
 
     for idx, coordinate in enumerate(line_data):
@@ -106,18 +103,17 @@ def test_2d_line_m():
     except NotImplementedError:
         assert True
 
-    # tester_1 = line.cut_on_measure(-1)
-    # tester_2 = line.cut_on_measure(50)
-    # tester_3 = line.cut_on_measure(301)
-    #
-    # tester_4 = line.cut_profile(30, 60)
-    # print()
+    assert line.cut_on_measure(-1)[0] == line
+    assert len(line.cut_on_measure(50))
+    assert line.cut_on_measure(301)[0] == line
+
+    assert line.cut_profile(0, 50).length_2d == 5
 
 
 def test_3d_line_m():
     # minimal edge case 3 as offset, same level line segments only on y and z offset, increasing m with 100
     line_data = [[3, 0, 0, 0], [3, 10, 20, 100], [3, 20, 40, 200], [3, 30, 80, 300]]
-    line = MeasureLineStringMSupport(line_data, m_given=True)
+    line = MeasureLineString(line_data, m_given=True)
     assert line.m_given is True
 
     for idx, coordinate in enumerate(line_data):
@@ -133,9 +129,8 @@ def test_3d_line_m():
     except NotImplementedError:
         assert True
 
-    # tester_1 = line.cut_on_measure(-1)
-    # tester_2 = line.cut_on_measure(31)
-    # tester_3 = line.cut_on_measure(5)
-    #
-    # tester_4 = line.cut_profile(30, 60)
-    # print()
+    assert line.cut_on_measure(-1)[0] == line
+    assert len(line.cut_on_measure(50))
+    assert line.cut_on_measure(301)[0] == line
+
+    assert line.cut_profile(0, 50).length_3d == 22.360679774997898
