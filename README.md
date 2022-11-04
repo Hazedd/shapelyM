@@ -81,7 +81,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] implement "point on side of line"
 - [X] return profile line on from measure as shapely
 - [X] return profile line on from and to measures as shapely
-- [ ] proper support for m values 
+- [X] proper support for m values 
 - [ ] stable main api
 - [ ] version 0.1.0-beta
 - [ ] refactor

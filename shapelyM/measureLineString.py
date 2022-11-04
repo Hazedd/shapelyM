@@ -14,6 +14,9 @@ from shapelyM.helpers import (
 from shapelyM.linear_reference import LineProjection, get_line_projection
 from shapelyM.measurePoint import MeasurePoint
 
+# from shapelyM.debug.autocad import AutocadService
+# acad = AutocadService()
+
 
 @dataclass
 class DistancePoint:
@@ -55,7 +58,9 @@ class MeasureLineString:
         return [[item.x, item.y, item.z] for item in self.line_measure_points]
 
     def _get_xyz_from_coordinates(self, coordinates):
-        if self.m_given and len(coordinates[0]) > 3:
+        if self.m_given and len(coordinates[0]) == 4 and coordinates[0][2] is None:
+            return [item[:2] for item in coordinates]
+        elif self.m_given and len(coordinates[0]) > 3:
             return [item[:3] for item in coordinates]
         elif self.m_given and len(coordinates[0]) > 2:
             return [item[:2] for item in coordinates]
@@ -108,7 +113,8 @@ class MeasureLineString:
                 else:
                     _length = line_point.m
             else:
-                line_point.m = 0
+                if line_point.m is None:
+                    line_point.m = 0
             response.append(line_point)
         return response
 
@@ -213,25 +219,43 @@ class MeasureLineString:
 
     @staticmethod
     def _cut(line_to_cut: LineString, measure: float) -> List[MeasureLineString]:
-        if measure <= 0.0 or measure >= line_to_cut.line_measure_points[-1].m:
-            return [line_to_cut]
+        if measure <= 0.0:
+            return [None, line_to_cut]
+        elif measure >= line_to_cut.line_measure_points[-1].m:
+            return [line_to_cut, None]
 
         coords = line_to_cut.line_measure_points
         for i, p in enumerate(coords):
             pd = p.m
 
             if pd == measure:
-                return [MeasureLineString(coords[: i + 1]), MeasureLineString(coords[i:])]
+                return [
+                    MeasureLineString([item.coordinate_list() for item in coords[: i + 1]]),
+                    MeasureLineString([item.coordinate_list() for item in coords[i:]]),
+                ]
 
             if pd > measure:
-                # get total distance between points 3d, get previous measure and correct measure length
-                line_segment_length = coords[i].m - coords[i - 1].m
 
-                percentage_along_line = measure / line_segment_length
-                distance_along_line = percentage_along_line * coords[i - 1].distance(coords[i])
-                # make 2d line get z
+                # leftover measure on line segment
+                if i == 0:
+                    left_over_measure = measure
+                else:
+                    left_over_measure = measure - coords[i - 1].m
+
+                # percentage leftover measure
+                measure_length = coords[i].m - coords[i - 1].m
+                percentage = left_over_measure / measure_length
+
+                # true measure == segment length * percentage leftover
+                segment_length = coords[i - 1].distance(coords[i])
+                true_measure = segment_length * percentage
+
+                # interpolate line
                 line = LineString([coords[i - 1].coordinate_list()[:2], coords[i].coordinate_list()[:2]])
-                point_along_line = line.interpolate(distance_along_line)
+                point_along_line = line.interpolate(true_measure)
+
+                # acad.DrawShapelyObject(point_along_line)
+
                 point_along_line = MinimalPoint(point_along_line.x, point_along_line.y)
                 try:
                     point_along_line.z = get_z_between_points(
@@ -242,23 +266,27 @@ class MeasureLineString:
                     point_along_line.z = None
 
                 # make (3d) line form start
-                point_list = [item.coordinate_list() for idx, item in enumerate(coords) if idx < i]
+                point_list = [[item.x, item.y, item.z, item.m] for idx, item in enumerate(coords) if idx < i]
                 if point_along_line.z is not None:
-                    point_list.append([point_along_line.x, point_along_line.y, point_along_line.z])
+                    point_list.append([point_along_line.x, point_along_line.y, point_along_line.z, measure])
                 else:
-                    point_list.append([point_along_line.x, point_along_line.y])
+                    point_list.append([point_along_line.x, point_along_line.y, None, measure])
 
-                line_1 = MeasureLineString(point_list)
+                # todo: make m values work
+                line_1 = MeasureLineString(point_list, m_given=True)
 
                 # make (3d) line to end
                 if point_along_line.z is not None:
-                    point_list = [[point_along_line.x, point_along_line.y, point_along_line.z]]
+                    point_list = [[point_along_line.x, point_along_line.y, point_along_line.z, measure]]
                 else:
-                    point_list = [[point_along_line.x, point_along_line.y]]
-                points_to_end = [item.coordinate_list() for idx, item in enumerate(coords) if idx >= i]
+                    point_list = [[point_along_line.x, point_along_line.y, None, measure]]
+                points_to_end = [
+                    [item.x, item.y, item.z, item.m] for idx, item in enumerate(coords) if idx >= i
+                ]
                 point_list.extend(points_to_end)
 
-                line_2 = MeasureLineString(point_list)
+                # todo: make m values work
+                line_2 = MeasureLineString(point_list, m_given=True)
 
                 return [line_1, line_2]
 
@@ -280,6 +308,6 @@ class MeasureLineString:
         if from_measure >= to_measure:
             raise ValueError("from_measure should be lower then to_measure.")
 
-        pre_cut = self._cut(self, from_measure)[0]
-        result = self._cut(pre_cut, (to_measure - from_measure))[0]
+        pre_cut = self._cut(self, from_measure)[1]
+        result = self._cut(pre_cut, to_measure)[0]
         return result

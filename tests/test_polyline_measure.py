@@ -4,6 +4,9 @@ from shapely.geometry import Point
 
 from shapelyM.measureLineString import MeasureLineString
 
+# import json
+
+
 # todo: split below to fixtures and smaller test cases in test class
 
 
@@ -26,21 +29,23 @@ def test_2d_line():
     # todo: add test for 3d points should be handled planar
     for idx, coordinate in enumerate(line_data):
         if idx + 1 < len(line_data):
-            y_ = coordinate[1] + 5
-            projection = line.project(Point(0, y_))
+            y = coordinate[1] + 5
+            projection = line.project(Point(0, y))
+            assert projection.point_on_line.x == 3
+            assert projection.point_on_line.y == y
             assert projection.point_on_line.z is None
-            assert projection.distance_along_line == y_
             assert projection.distance_to_line_2d == 3
             assert projection.distance_to_line_3d is None
-            assert projection.point_on_line.x == 3
-            assert projection.point_on_line.y == y_
-            assert projection.point_on_line.m == y_
+            assert projection.point_on_line.m == y
+            assert projection.distance_along_line == y
 
-    assert line.cut_on_measure(-1)[0] == line
+    assert line.cut_on_measure(-1)[0] is None
+    assert line.cut_on_measure(-1)[1] == line
     # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(5)) == 2
     assert line.cut_on_measure(31)[0] == line
-    assert line.cut_profile(3, 7).length_2d == 3
+    assert line.cut_on_measure(31)[1] is None
+    assert line.cut_profile(3, 7).length_2d == 4.0
 
 
 def test_3d_line():
@@ -68,22 +73,24 @@ def test_3d_line():
     ]
     for idx, coordinate in enumerate(line_data):
         if idx + 1 < len(line_data):
-            y_ = coordinate[1] + 5
-            projection = line.project(Point(0, y_, 0))
+            y = coordinate[1] + 5
+            projection = line.project(Point(0, y, 0))
             assert projection.point_on_line.z is not None
             assert projection.distance_along_line == expected_results[idx][0]
             assert projection.distance_to_line_2d == 3
             assert projection.distance_to_line_3d == expected_results[idx][1]
             assert projection.point_on_line.x == 3
-            assert projection.point_on_line.y == y_
+            assert projection.point_on_line.y == y
             assert projection.point_on_line.m == expected_results[idx][0]
 
-    assert line.cut_on_measure(-1)[0] == line
+    assert line.cut_on_measure(-1)[0] is None
+    assert line.cut_on_measure(-1)[1] == line
     # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(5)) == 2
+    assert line.cut_on_measure(86)[1] is None
     assert line.cut_on_measure(86)[0] == line
 
-    assert line.cut_profile(3, 5).length_2d == 2
+    assert line.cut_profile(3, 5).length_2d == 1.6169345316802266
 
 
 def test_2d_line_m():
@@ -105,10 +112,22 @@ def test_2d_line_m():
     except NotImplementedError:
         assert True
 
-    assert line.cut_on_measure(-1)[0] == line
+    # measure_cut = line.cut_on_measure(120)
+
+    # acad.DrawShapelyObject(line.shapely)
+    # if measure_cut[0] is not None:
+    #     acad.DrawShapelyObject(measure_cut[0].shapely, color=5)
+    # if measure_cut[1] is not None:
+    #     acad.DrawShapelyObject(measure_cut[1].shapely, color=6)
+    # profile_cut = line.cut_profile(250, 275)
+    # acad.DrawShapelyObject(profile_cut.shapely, color=3)
+
+    assert line.cut_on_measure(-1)[0] is None
+    assert line.cut_on_measure(-1)[1] == line
     # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(50))
     assert line.cut_on_measure(301)[0] == line
+    assert line.cut_on_measure(301)[1] is None
 
     assert line.cut_profile(0, 50).length_2d == 5
 
@@ -132,9 +151,45 @@ def test_3d_line_m():
     except NotImplementedError:
         assert True
 
-    assert line.cut_on_measure(-1)[0] == line
+    # todo: check in autocad
+
+    assert line.cut_on_measure(-1)[0] is None
+    assert line.cut_on_measure(-1)[1] == line
     # todo: add better test for cut_on_measure
     assert len(line.cut_on_measure(50))
     assert line.cut_on_measure(301)[0] == line
+    assert line.cut_on_measure(301)[1] is None
 
     assert line.cut_profile(0, 50).length_3d == 22.360679774997898
+
+
+# from shapelyM.debug.autocad import AutocadService
+# acad = AutocadService()
+#
+# def test_schema_line_m():
+#     file_path = r""
+#
+#     with open(file_path) as f:
+#         d = json.load(f)
+#
+#     for item in d["schemaRailConnectionFeatures"]:
+#         coords = item["geometry"]["paths"][0]
+#         coords.sort(key=lambda x: x[3], reverse=False)
+#         line = MeasureLineString(coords, m_given=True)
+#         acad.DrawShapelyObject(line.shapely)
+#
+#         acad.DrawText( item['attributes']['name'], line.shapely.centroid)
+#         cut = line.length_measure * 0.2
+#         measure_cut = line.cut_on_measure(cut)
+#         # if measure_cut[0] is not None:
+#         #     acad.DrawShapelyObject(measure_cut[0].shapely, color=5)
+#         # if measure_cut[1] is not None:
+#         #     acad.DrawShapelyObject(measure_cut[1].shapely, color=6)
+#         if item['attributes']['key'] == "2c94c427-9cc7-41b7-82bb-038ff36c4242":
+#             start = 500
+#             end = 6000
+#         else:
+#             start = line.length_measure * 0.5
+#             end = line.length_measure * 0.8
+#         profile_cut = line.cut_profile(start, end)
+#         acad.DrawShapelyObject(profile_cut.shapely, color=3)
