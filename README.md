@@ -6,7 +6,7 @@ Shapely is a BSD-licensed Python package for manipulation and analysis of planar
 
 ShapelyM can be used to linear referencing in 3D and is designed to work (without) shapely.
 
-### Warning you use this, make sure to pin the version, api is far from stable!
+# Warning if you use this project make sure to pin the version, api is far from stable!
 
 ## Installation
 
@@ -21,15 +21,25 @@ pip install shapelyM
 3. get measure
 4. get side of line (by azimuth)
 
-### Visual
-![alt text](https://raw.githubusercontent.com/Hazedd/shapelyM/master/assets/3d_view.png)
+### Visual projection
+![alt text](./assets/3d_view.png)
 
-## Usage:
+
+### Visual profiles
+todo..
+
+
+### Visual schema
+![alt text](./assets/schema_profile_view.png)
+
+# Usage:
 
 ```python
 from shapely.geometry import Point
 from shapelyM import MeasureLineString, MeasurePoint
 ```
+
+## Projection
 
 ```python
 line_measure = MeasureLineString([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]])
@@ -52,7 +62,7 @@ shapelyM.LineProjection
 }
  ```
 
-#### MeasurePoint:
+### MeasurePoint:
 
 ```
 {
@@ -65,13 +75,27 @@ shapelyM.LineProjection
 ```
 
 
-#### LeftRightOnLineEnum:
+### LeftRightOnLineEnum:
 ```
     left = "Left"
     right = "Right"
     on = "On Vector"
 ```
 
+
+## Get line by measure
+```python
+
+```
+
+## Get profile by from and to measure
+```python
+
+```
+
+
+# Schematic support by given m values 
+................
 
 # Contribute
 Feel free to do some black math magic, add test or make suggestions.
@@ -85,10 +109,12 @@ Feel free to do some black math magic, add test or make suggestions.
 - [ ] stable main api
 - [ ] version 0.1.0-beta
 - [ ] refactor
-- [ ] mkdocs as documentation
+- [ ] mkdocs documentation generation
 - [ ] clear commit history
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
+- [ ] autocad tools as dependency in a separate project 
+- [ ] shapley tools as dependency in a separate project
 - [ ] 100% test coverage
 - [ ] version 1.0.0
 
