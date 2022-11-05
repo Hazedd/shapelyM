@@ -6,30 +6,61 @@ Shapely is a BSD-licensed Python package for manipulation and analysis of planar
 
 ShapelyM can be used to linear referencing in 3D and is designed to work (without) shapely.
 
-# Warning if you use this project make sure to pin the version, api is far from stable!
-
 ## Installation
 
 ```bash
 pip install shapelyM
 ```
 
+### Warning if you use this project make sure to pin the version, api is far from stable!
 
-## Way of working
-1. project (3d) point on on 2d polyline (representation of a 3d polyline)
-2. get height on polyline
-3. get measure
-4. get side of line (by azimuth)
+# Linear referencing
+Linear referencing is used to geographically locate data on relative positions along a measured line. 
+We can use a use x,y(, z) coordinates for locating a measure value, measure values are a distance along a line.
+A measure value locates point events along a line, for a profile a from and to measure value is used.
 
-### Visual projection
+![alt text](./assets/linear referencing.png)
+
+## Measure values
+M-Values describes the distance from the start to a point, it can be a geographic distance or a relative distance.
+When using a relative distance every vertex of the line has a calibration value.
+For example for a line, it could be used to store speed profiles along a road.
+
+## Functional direction
+A measured line has a given direction an therefor always drawn in the same way.
+So we can use a rotation to determinate the side of the line and the direction related to the line.
+For example a road sign has a front and a rear side, when assuming the rotation is given like this we can define a functional direction.
+
+## Projection
+Given a xy point we find the closed perpendicular point on the line. We measure the distance to the start of the line. 
+When linear referencing a line we project the start and the end point or measure every vertex of the line.
+
+### Why shapelyM
+Linear referencing is mostly based on a 1-dimensional referencing system and does not support relative referencing system.
+ShapelyM linear referencing is based on a **2-dimensional** referencing system (xy and x) and it supports relative m-values.
+It also supports some other linear referencing concepts and tools.   
+
+### Rules for 3d
+When projecting we have a few use cases that acts different, when projecting:
+
+- a 2d or 3d point on a 2d line: all 3d values should be None.
+- a 2d point on a 3d line: all 3d values, except distance to line will be None.
+
+### Way of working
+1. project (3d) point on on 2d polyline that is a representation of a 3d polyline
+2. get height on polyline and combine it with the 2d point
+3. get measure along the line
+4. determinate the side of line by an azimuth
+5. determinate the functional direction of line by an azimuth
+
+### Visual
 ![alt text](./assets/3d_view.png)
 
+##  Schematic support by given m values
+When plotting information about linear civil infrastructure it's usual to have a schematic view of the geometry. 
+ShapelyM supports consuming custom m-values and will support projection on schematic views in the feature.
 
-### Visual profiles
-todo..
-
-
-### Visual schema
+### Visual 
 ![alt text](./assets/schema_profile_view.png)
 
 # Usage:
@@ -50,7 +81,6 @@ projection = line_measure.project(Point(0, 5, 0))
 
 ### Returns:
 shapelyM.LineProjection
-
 ```
 {
     'point': MeasurePoint, 
@@ -62,8 +92,7 @@ shapelyM.LineProjection
 }
  ```
 
-### MeasurePoint:
-
+MeasurePoint:
 ```
 {
     'x': 3.0,
@@ -75,27 +104,29 @@ shapelyM.LineProjection
 ```
 
 
-### LeftRightOnLineEnum:
+LeftRightOnLineEnum:
 ```
     left = "Left"
     right = "Right"
     on = "On Vector"
 ```
 
-
 ## Get line by measure
 ```python
-
+lines = line_measure.cut_on_measure(15)
+line = line_measure.cut_profile(15, 25)
 ```
 
-## Get profile by from and to measure
+## Relative m-measure values 
 ```python
-
+    # 3d
+    line_data = [[3, 0, 0, 0], [3, 10, 20, 100], [3, 20, 40, 200], [3, 30, 80, 300]]
+    line = MeasureLineString(line_data, m_given=True)
+    
+    # 2d
+    line_data = [[3, 0, 0], [3, 10, 100], [3, 20, 200], [3, 30, 300]]
+    line = MeasureLineString(line_data, m_given=True)
 ```
-
-
-# Schematic support by given m values 
-................
 
 # Contribute
 Feel free to do some black math magic, add test or make suggestions.
@@ -105,7 +136,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] implement "point on side of line"
 - [X] return profile line on from measure as shapely
 - [X] return profile line on from and to measures as shapely
-- [X] proper support for m values 
+- [X] support for given m values 
 - [ ] stable main api
 - [ ] version 0.1.0-beta
 - [ ] refactor
