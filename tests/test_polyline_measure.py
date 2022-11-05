@@ -39,12 +39,12 @@ def test_2d_line():
             assert projection.point_on_line.m == y
             assert projection.distance_along_line == y
 
-    assert line.cut_on_measure(-1)[0] is None
-    assert line.cut_on_measure(-1)[1] == line
+    assert line.cut(-1)[0] is None
+    assert line.cut(-1)[1] == line
     # todo: add better test for cut_on_measure
-    assert len(line.cut_on_measure(5)) == 2
-    assert line.cut_on_measure(31)[0] == line
-    assert line.cut_on_measure(31)[1] is None
+    assert len(line.cut(5)) == 2
+    assert line.cut(31)[0] == line
+    assert line.cut(31)[1] is None
     assert line.cut_profile(3, 7).length_2d == 4.0
 
 
@@ -83,12 +83,12 @@ def test_3d_line():
             assert projection.point_on_line.y == y
             assert projection.point_on_line.m == expected_results[idx][0]
 
-    assert line.cut_on_measure(-1)[0] is None
-    assert line.cut_on_measure(-1)[1] == line
+    assert line.cut(-1)[0] is None
+    assert line.cut(-1)[1] == line
     # todo: add better test for cut_on_measure
-    assert len(line.cut_on_measure(5)) == 2
-    assert line.cut_on_measure(86)[1] is None
-    assert line.cut_on_measure(86)[0] == line
+    assert len(line.cut(5)) == 2
+    assert line.cut(86)[1] is None
+    assert line.cut(86)[0] == line
 
     assert line.cut_profile(3, 5).length_2d == 1.6169345316802266
 
@@ -122,12 +122,12 @@ def test_2d_line_m():
     # profile_cut = line.cut_profile(250, 275)
     # acad.DrawShapelyObject(profile_cut.shapely, color=3)
 
-    assert line.cut_on_measure(-1)[0] is None
-    assert line.cut_on_measure(-1)[1] == line
+    assert line.cut(-1)[0] is None
+    assert line.cut(-1)[1] == line
     # todo: add better test for cut_on_measure
-    assert len(line.cut_on_measure(50))
-    assert line.cut_on_measure(301)[0] == line
-    assert line.cut_on_measure(301)[1] is None
+    assert len(line.cut(50))
+    assert line.cut(301)[0] == line
+    assert line.cut(301)[1] is None
 
     assert line.cut_profile(0, 50).length_2d == 5
 
@@ -153,12 +153,12 @@ def test_3d_line_m():
 
     # todo: check in autocad
 
-    assert line.cut_on_measure(-1)[0] is None
-    assert line.cut_on_measure(-1)[1] == line
+    assert line.cut(-1)[0] is None
+    assert line.cut(-1)[1] == line
     # todo: add better test for cut_on_measure
-    assert len(line.cut_on_measure(50))
-    assert line.cut_on_measure(301)[0] == line
-    assert line.cut_on_measure(301)[1] is None
+    assert len(line.cut(50))
+    assert line.cut(301)[0] == line
+    assert line.cut(301)[1] is None
 
     assert line.cut_profile(0, 50).length_3d == 22.360679774997898
 

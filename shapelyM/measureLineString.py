@@ -290,7 +290,7 @@ class MeasureLineString:
 
                 return [line_1, line_2]
 
-    def cut_on_measure(self, measure: float) -> List[MeasureLineString]:
+    def cut(self, measure: float) -> List[MeasureLineString]:
         """Cut on a given measure returns both parts.
 
         :param: measure: line cut measure as a float.

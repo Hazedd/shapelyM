@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Optional
 
 from shapely.geometry import LineString, Point
@@ -13,11 +14,22 @@ from shapelyM.helpers import (
     determinate_left_right_on_line,
     get_azimuth_from_points,
     get_z_between_points,
+    project_point_on_azimuth,
     project_point_on_line,
 )
 from shapelyM.measurePoint import MeasurePoint
 
 # todo: make frozen
+
+
+class FunctionalDirection(str, Enum):
+    """Enumeration to determinate if a Point is on left or right of a line."""
+
+    downstream = "Downstream"
+    upstream = "Upstream"
+    both = "Both"
+    none = "None"
+    unknown = "Unknown"
 
 
 @dataclass
@@ -26,6 +38,7 @@ class LineProjection:
 
     point: MeasurePoint
     azimuth: float
+    functional_direction: FunctionalDirection
     side_of_line: LeftRightOnLineEnum
     point_on_line: MeasurePoint
     distance_to_line_2d: float
@@ -78,6 +91,7 @@ def get_line_projection(
     point: MeasurePoint,
     point_on_line_overrule: Optional[MeasurePoint] = None,
     azimuth: Optional[float] = None,
+    function_direction: Optional[FunctionalDirection] = None,
     debug: bool = False,
 ) -> LineProjection:
     """Methode to make a line projection given 2 points and a point to project.
@@ -89,6 +103,7 @@ def get_line_projection(
     :param point: Point to project on line.
     :param point_on_line_overrule: overrule point on line
     :param azimuth: optional rotation for ....
+    :param function_direction: optional rotation for ....
     :param debug: draw in autocad todo: remove before 0.1.0 release
 
     """
@@ -109,17 +124,31 @@ def get_line_projection(
     point_on_line.m = distance_along_line
 
     if not azimuth:
-        azimuth = get_azimuth_from_points(line_point_1, line_point_2)
+        azimuth_value = get_azimuth_from_points(line_point_1, line_point_2)
 
+    line = LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]])
     side_of_line = determinate_left_right_on_line(
         Point([point.x, point.y]),
-        azimuth,
-        LineString([[line_point_1.x, line_point_1.y], [line_point_2.x, line_point_2.y]]),
+        azimuth_value,
+        line,
     )
+
+    if function_direction is None:
+        # todo: if same, reproject own on azimut -180m then new next point, if same set unknown.
+        next_point = project_point_on_azimuth(point_on_line, azimuth_value, 0.5)
+        measure = line.project(point_on_line.shapely())
+        next_measure = line.project(next_point)
+        if measure > next_measure:
+            functional_direction = FunctionalDirection.upstream
+        else:
+            functional_direction = FunctionalDirection.downstream
+        if not azimuth:
+            functional_direction = FunctionalDirection.unknown
 
     result = LineProjection(
         point=point,
         azimuth=azimuth,
+        functional_direction=functional_direction,
         side_of_line=side_of_line,
         point_on_line=point_on_line,
         distance_to_line_2d=distance_to_line_2d,

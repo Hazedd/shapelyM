@@ -116,6 +116,17 @@ class LeftRightOnLineEnum(str, Enum):
     on = "On vector"
 
 
+def project_point_on_azimuth(point: Point, azimuth: float, projection_distance: float = 0.5) -> Point:
+    azimuth = correct_azimuth(azimuth)
+    angle = 90 - azimuth
+    angle_rad = math.radians(angle)
+    point_projected_on_azimuth_angle = Point(
+        point.x + projection_distance * math.cos(angle_rad),
+        point.y + projection_distance * math.sin(angle_rad),
+    )
+    return point_projected_on_azimuth_angle
+
+
 def determinate_left_right_on_line(
     point_to_check: Union[Point],
     azimuth: float,
@@ -133,13 +144,14 @@ def determinate_left_right_on_line(
     if not isinstance(point_to_check, Point):
         point_to_check = get_shapley_point_from_minimal_point(point_to_check)
 
-    azimuth = correct_azimuth(azimuth)
-    angle = 90 - azimuth
-    angle_rad = math.radians(angle)
-    point_projected_on_azimuth_angle = Point(
-        point_to_check.x + projection_distance * math.cos(angle_rad),
-        point_to_check.y + projection_distance * math.sin(angle_rad),
-    )
+    point_projected_on_azimuth_angle = project_point_on_azimuth(point_to_check, azimuth, projection_distance)
+    # azimuth = correct_azimuth(azimuth)
+    # angle = 90 - azimuth
+    # angle_rad = math.radians(angle)
+    # point_projected_on_azimuth_angle = Point(
+    #     point_to_check.x + projection_distance * math.cos(angle_rad),
+    #     point_to_check.y + projection_distance * math.sin(angle_rad),
+    # )
 
     object_measure = shapely_line.project(point_to_check)
     projected_measure = shapely_line.project(point_projected_on_azimuth_angle)
