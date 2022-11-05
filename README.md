@@ -139,14 +139,14 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] return profile line on from and to measures as shapely
 - [X] support for given m values 
 - [ ] stable main api
-- [ ] version 0.1.0-beta
+- [ ] autocad tools as dependency in a separate project
+- [ ] version 0.1.0-beta 
+- [ ] shapley tools as dependency in a separate project
 - [ ] refactor
 - [ ] mkdocs documentation generation
 - [ ] clear commit history
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
-- [ ] autocad tools as dependency in a separate project 
-- [ ] shapley tools as dependency in a separate project
 - [ ] 100% test coverage
 - [ ] version 1.0.0
 
