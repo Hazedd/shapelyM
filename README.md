@@ -70,10 +70,16 @@ from shapely.geometry import Point
 from shapelyM import MeasureLineString, MeasurePoint
 ```
 
-## Projection
+## MeasureLineString
 
-```python
+```python 
 line_measure = MeasureLineString([[3, 0, 0], [3, 10, 0], [3, 20, 0], [3, 30, 0]])
+```
+### Returns:
+....
+
+## Projection
+```python
 projection = line_measure.project(Point(0, 5, 0))
 # or:
 # projection = line_measure.project(MeasurePoint(0, 5, 0))
@@ -81,43 +87,38 @@ projection = line_measure.project(Point(0, 5, 0))
 
 ### Returns:
 shapelyM.LineProjection
-```
-{
-    'point': MeasurePoint, 
-    'point_on_line': MeasurePoint, 
-    'distance_to_line': 5.830951894845301, 
-    'distance_to_line_2d': 3.0, 
-    'distance_along_line': 7.0710678118654755, 
-    'side_of_line': LeftRightOnLineEnum
+```python
+{   'azimuth': 0.0
+    'distance_along_line': 7.0710678118654755,
+    'distance_to_line_2d': 3.0,
+    'distance_to_line_3d': 5.830951894845301,
+    'functional_direction': shapelyM.FunctionalDirection
+    'point': shapelyM.MeasurePoint, 
+    'point_on_line': shapelyM.MeasurePoint, 
+    'side_of_line': shapelyM.LeftRightOnLineEnum
 }
  ```
 
-MeasurePoint:
-```
-{
-    'x': 3.0,
-    'y': 5.0,
-    'z': 5.0,
-    'm': 7.0710678118654755,
-    'shapely': shapely.geometry.Point
-}
-```
-
-
-LeftRightOnLineEnum:
-```
-    left = "Left"
-    right = "Right"
-    on = "On Vector"
-```
-
 ## Get line by measure
+
 ```python
-lines = line_measure.cut_on_measure(15)
+lines = line_measure.cut(15)
+```
+
+### Returns:
+list of MeasureLineStrings where the first in list is the first part of the cut second in the list is the last part.
+If fist is None it's a undershoot if second is None it's an overshoot. 
+
+## Get profile by from and to measure
+```python
 line = line_measure.cut_profile(15, 25)
 ```
 
-## Relative m-measure values 
+### Returns:
+MeasureLineString of the profile.
+
+
+## Custom m-measure values as input 
 ```python
     # 3d
     line_data = [[3, 0, 0, 0], [3, 10, 20, 100], [3, 20, 40, 200], [3, 30, 80, 300]]
