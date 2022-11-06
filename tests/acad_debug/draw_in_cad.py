@@ -1,9 +1,13 @@
 from shapely.geometry import LineString
-from shapelyAcad.autocad import ShapelyAcad
+
+try:
+    from shapelyAcad.autocad import ShapelyAcad
+
+    acad = ShapelyAcad()
+except ImportError as e:
+    print(e)
 
 from shapelyM import LineProjection, MeasureLineString, MeasurePoint
-
-acad = ShapelyAcad()
 
 # todo: add color
 
