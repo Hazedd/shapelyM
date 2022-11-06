@@ -6,7 +6,6 @@ from shapely.ops import linemerge
 
 from shapelyM.measureLineString import MeasureLineString
 from shapelyM.measurePoint import MeasurePoint
-
 from tests.acad_debug.draw_in_cad import (
     draw_measure_line_in_autocad,
     draw_projection_in_autocad,

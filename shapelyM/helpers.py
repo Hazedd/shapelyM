@@ -20,6 +20,8 @@ class MinimalPointProtocol(Protocol):
 class MinimalPoint:
     """Minimal point optional z value."""
 
+    # todo: typechecker fails on this: could it be the property??
+
     x: float
     y: float
     z: Optional[float] = None

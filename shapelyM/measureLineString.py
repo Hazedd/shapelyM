@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import List, Optional, Union
 
 from shapely.geometry import LineString, Point
@@ -13,9 +14,6 @@ from shapelyM.helpers import (
 )
 from shapelyM.linear_reference import LineProjection, get_line_projection
 from shapelyM.measurePoint import MeasurePoint
-
-# from shapelyM.debug.autocad import AutocadService
-# acad = AutocadService()
 
 
 @dataclass
@@ -34,12 +32,40 @@ class DistancePoints:
         return self.values
 
 
-# todo:
-#  - add has_z()
-#  - make dataclass, make frozen
+class CutProfileStatus(str, Enum):
+    """Enumeration to determinate if a measure cut is correct."""
+
+    undershoot = "Undershoot"
+    overshoot = "Overshoot"
+    under_and_overshoot = "Under and overshoot"
+    invalid = "Invalid"
+    valid = "Valid"
+
+
+@dataclass
+class MeasureProfile:
+    from_measure: float = None
+    to_measure: float = None
+    status: CutProfileStatus = None
+    pre_cut: Optional[MeasureLineString] = None
+    result: Optional[MeasureLineString] = None
+    post_cut: Optional[MeasureLineString] = None
+
+
+@dataclass
+class MeasureCut:
+    measure: float = None
+    status: CutProfileStatus = None
+    result: Optional[MeasureLineString] = None
+    post_cut: Optional[MeasureLineString] = None
 
 
 class MeasureLineString:
+
+    # todo:
+    #  - add has_z()
+    #  - make dataclass, make frozen
+
     def __init__(self, coordinates: List[List[float]], m_given: bool = False):
         self._line_coordinates_raw: List[List[float]] = coordinates
         self.m_given: bool = m_given
@@ -52,7 +78,12 @@ class MeasureLineString:
             self.length_3d: Optional[float] = None
 
         self.length_2d: float = self._get_length_by_geometry(coordinates_xyz, force_2d=True)
-        self.length_measure: float = self.line_measure_points[-1].m
+        self.end_measure: float = self.line_measure_points[-1].m
+        self.start_measure: float = self.line_measure_points[0].m
+        self.measure_length: float = self.end_measure - self.start_measure
+
+    # def __repr__(self):
+    #     return str(self.__dict__)
 
     def coordinate_list(self):
         return [[item.x, item.y, item.z] for item in self.line_measure_points]
@@ -130,10 +161,6 @@ class MeasureLineString:
 
     def project(self, point: Union[MeasurePoint, Point], azimuth: Optional[float] = None) -> LineProjection:
         """Returns a linear reference object given a point and an optional rotation.
-
-        Todo:
-          - return functional direction.
-          - remove MeasurePoint, make sure convert outside object...
 
         :param point: MinimalPoint or shapely.Point
         :param azimuth: rotations as a float (seen from north to the right).
@@ -272,7 +299,6 @@ class MeasureLineString:
                 else:
                     point_list.append([point_along_line.x, point_along_line.y, None, measure])
 
-                # todo: make m values work
                 line_1 = MeasureLineString(point_list, m_given=True)
 
                 # make (3d) line to end
@@ -285,29 +311,103 @@ class MeasureLineString:
                 ]
                 point_list.extend(points_to_end)
 
-                # todo: make m values work
                 line_2 = MeasureLineString(point_list, m_given=True)
 
                 return [line_1, line_2]
 
-    def cut(self, measure: float) -> List[MeasureLineString]:
+    def cut(self, measure: float) -> MeasureCut:
         """Cut on a given measure returns both parts.
 
         :param: measure: line cut measure as a float.
         :return: List[MeasureLineString] where 1st is first part, 2th end part
         """
-        return self._cut(self, measure)
 
-    def cut_profile(self, from_measure: float, to_measure: float) -> MeasureLineString:
-        """Cut on a given from and to measure returns the cut profile.
+        def get_cut_status(_measure):
+            if _measure < self.start_measure:
+                return CutProfileStatus.undershoot
+            elif _measure > self.end_measure:
+                return CutProfileStatus.overshoot
+            return CutProfileStatus.valid
+
+        def return_invalid(_measure):
+            return MeasureCut(
+                measure=_measure,
+                status=CutProfileStatus.invalid,
+                result=None,
+                post_cut=None,
+            )
+
+        cut = self._cut(self, measure)
+
+        if cut[0] is None and measure > self.start_measure:
+            return return_invalid(measure)
+        elif cut[1] is None and measure < self.end_measure:
+            return return_invalid(measure)
+
+        status = get_cut_status(measure)
+
+        return MeasureCut(
+            measure=measure,
+            status=status,
+            result=cut[0],
+            post_cut=cut[1],
+        )
+
+    def cut_profile(self, from_measure: float, to_measure: float) -> MeasureProfile:
+        """Cut on a given from and to measure returns the cut result.
 
         :param: from_measure: line cut from measure as a float.
         :param: to_measure: line cut to measure as a float.
-        :return: a MeasureLineString of the profile
+        :return: a MeasureLineString of the result
         """
+
+        def get_profile_status(from_measure, to_measure, start_measure, end_measure):
+
+            if from_measure < start_measure and to_measure > end_measure:
+                return CutProfileStatus.under_and_overshoot
+
+            elif from_measure < start_measure or to_measure < start_measure:
+                return CutProfileStatus.undershoot
+
+            elif from_measure > end_measure or to_measure > end_measure:
+                return CutProfileStatus.overshoot
+
+            return CutProfileStatus.valid
+
+        def return_invalid(from_measure, to_measure):
+            return MeasureProfile(
+                from_measure=from_measure,
+                to_measure=to_measure,
+                status=CutProfileStatus.invalid,
+                pre_cut=None,
+                result=None,
+                post_cut=None,
+            )
+
         if from_measure >= to_measure:
             raise ValueError("from_measure should be lower then to_measure.")
+        elif from_measure == to_measure:
+            raise ValueError("from_measure shouldn't be same as to_measure.")
 
-        pre_cut = self._cut(self, from_measure)[1]
-        result = self._cut(pre_cut, to_measure)[0]
-        return result
+        pre_cut = self._cut(self, from_measure)
+
+        if pre_cut[1] is None:
+            return return_invalid(from_measure, to_measure)
+
+        result = self._cut(pre_cut[1], to_measure)
+
+        if result[0] is None and from_measure > self.start_measure:
+            return return_invalid(from_measure, to_measure)
+        if result[0] is None and to_measure < self.end_measure:
+            return return_invalid(from_measure, to_measure)
+
+        status = get_profile_status(from_measure, to_measure, self.start_measure, self.end_measure)
+
+        return MeasureProfile(
+            from_measure=from_measure,
+            to_measure=to_measure,
+            status=status,
+            pre_cut=pre_cut[0],
+            result=result[0],
+            post_cut=result[1],
+        )

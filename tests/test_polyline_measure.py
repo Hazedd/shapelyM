@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from shapely.geometry import Point
 
-from shapelyM.measureLineString import MeasureLineString
+from shapelyM.measureLineString import CutProfileStatus, MeasureLineString
 
 # import json
 
@@ -10,7 +10,7 @@ from shapelyM.measureLineString import MeasureLineString
 # todo: split below to fixtures and smaller test cases in test class
 
 
-def test_2d_line():
+def test_2d_line_cut_and_profile():
     # minimal edge case 3 as offset, same level line segments only on y offset
     line_data = [[3, 0], [3, 10], [3, 20], [3, 30]]
     line = MeasureLineString(line_data)
@@ -23,7 +23,7 @@ def test_2d_line():
     assert line.length_2d == 30
     assert line.shapely.length == line.length_2d
     assert line.length_3d is None
-    assert line.length_measure == 30
+    assert line.end_measure == 30
 
     # minimal project test, use center of lin segment and 2d point
     # todo: add test for 3d points should be handled planar
@@ -39,16 +39,43 @@ def test_2d_line():
             assert projection.point_on_line.m == y
             assert projection.distance_along_line == y
 
-    assert line.cut(-1)[0] is None
-    assert line.cut(-1)[1] == line
-    # todo: add better test for cut_on_measure
-    assert len(line.cut(5)) == 2
-    assert line.cut(31)[0] == line
-    assert line.cut(31)[1] is None
-    assert line.cut_profile(3, 7).length_2d == 4.0
+    line_undershoot = line.cut(-1)
+    assert line_undershoot.status == CutProfileStatus.undershoot
+    assert line_undershoot.result is None
+    assert line_undershoot.post_cut == line
+
+    line_overshoot = line.cut(31)
+    assert line_overshoot.status == CutProfileStatus.overshoot
+    assert line_overshoot.result == line
+    assert line_overshoot.post_cut is None
+
+    line_cut = line.cut(5)
+    assert line_cut.status == CutProfileStatus.valid
+    assert line_cut.result.length_2d == 5
+    assert line_cut.result.end_measure == 5
+    assert line_cut.post_cut.length_2d == 25
+    assert line_cut.post_cut.start_measure == 5
+    assert line_cut.post_cut.end_measure == 30
+
+    # todo: add more tests
+
+    line_profile = line.cut_profile(-5, -1)
+    assert line_profile.status == CutProfileStatus.invalid
+
+    line_profile = line.cut_profile(31, 32)
+    assert line_profile.status == CutProfileStatus.invalid
+
+    line_profile = line.cut_profile(-1, 5)
+    assert line_profile.status == CutProfileStatus.undershoot
+    line_profile = line.cut_profile(1, 31)
+    assert line_profile.status == CutProfileStatus.overshoot
+    line_profile = line.cut_profile(-1, 31)
+    assert line_profile.status == CutProfileStatus.under_and_overshoot
+    line_profile = line.cut_profile(5, 10)
+    assert line_profile.status == CutProfileStatus.valid
 
 
-def test_3d_line():
+def test_3d_line_cut():
     # minimal edge case 3 as offset, same level line segments only on y and z offset
     line_data = [[3, 0, 0], [3, 10, 20], [3, 20, 40], [3, 30, 80]]
     distance = [0, 22.360679774997898, 44.721359549995796, 85.95241580617241]
@@ -62,7 +89,7 @@ def test_3d_line():
     assert line.length_2d == 30
     assert line.shapely.length == line.length_2d
     assert line.length_3d == 85.95241580617241
-    assert line.length_measure == line.length_3d
+    assert line.end_measure == line.length_3d
 
     # minimal project test, use center of lin segment and 3d point
     # todo: add test for 2d points should be handled as same z as point on line
@@ -83,17 +110,22 @@ def test_3d_line():
             assert projection.point_on_line.y == y
             assert projection.point_on_line.m == expected_results[idx][0]
 
-    assert line.cut(-1)[0] is None
-    assert line.cut(-1)[1] == line
-    # todo: add better test for cut_on_measure
-    assert len(line.cut(5)) == 2
-    assert line.cut(86)[1] is None
-    assert line.cut(86)[0] == line
+    line_cut = line.cut(-1)
+    assert line_cut.status == CutProfileStatus.undershoot
+    assert line_cut.post_cut == line
 
-    assert line.cut_profile(3, 5).length_2d == 1.6169345316802266
+    line_cut = line.cut(100)
+    assert line_cut.status == CutProfileStatus.overshoot
+    assert line_cut.result == line
+    assert line_cut.post_cut is None
+
+    line_cut = line.cut(33)
+    assert line_cut.status == CutProfileStatus.valid
+    assert line_cut.result.start_measure == line.start_measure
+    assert line_cut.post_cut.start_measure == line_cut.result.end_measure
 
 
-def test_2d_line_m():
+def test_2d_line_m_cut():
     # minimal edge case 3 as offset, same level line segments only on y offset, increasing m with 100
     line_data = [[3, 0, 0], [3, 10, 100], [3, 20, 200], [3, 30, 300]]
     line = MeasureLineString(line_data, m_given=True)
@@ -105,36 +137,29 @@ def test_2d_line_m():
 
     assert line.length_2d == 30
     assert line.length_3d is None
-    assert line.length_measure == 300
+    assert line.end_measure == 300
 
     try:
         line.project(Point(0, 0))
     except NotImplementedError:
         assert True
 
-    # measure_cut = line.cut(120)
-    # profile_cut = line.cut_profile(250, 275)
+    line_cut = line.cut(-1)
+    assert line_cut.status == CutProfileStatus.undershoot
+    assert line_cut.post_cut == line
 
-    # measure_cut = line.cut(120)
-    # acad.draw_shapely(line.shapely)
-    # if measure_cut[0] is not None:
-    #     acad.draw_shapely(measure_cut[0].shapely, color=5)
-    # if measure_cut[1] is not None:
-    #     acad.draw_shapely(measure_cut[1].shapely, color=6)
-    # profile_cut = line.cut_profile(250, 275)
-    # acad.draw_shapely(profile_cut.shapely, color=3)
+    line_cut = line.cut(350)
+    assert line_cut.status == CutProfileStatus.overshoot
+    assert line_cut.result == line
+    assert line_cut.post_cut is None
 
-    assert line.cut(-1)[0] is None
-    assert line.cut(-1)[1] == line
-    # todo: add better test for cut_on_measure
-    assert len(line.cut(50))
-    assert line.cut(301)[0] == line
-    assert line.cut(301)[1] is None
-
-    assert line.cut_profile(0, 50).length_2d == 5
+    line_cut = line.cut(150)
+    assert line_cut.status == CutProfileStatus.valid
+    assert line_cut.result.start_measure == line.start_measure
+    assert line_cut.post_cut.start_measure == line_cut.result.end_measure
 
 
-def test_3d_line_m():
+def test_3d_line_m_cut():
     # minimal edge case 3 as offset, same level line segments only on y and z offset, increasing m with 100
     line_data = [[3, 0, 0, 0], [3, 10, 20, 100], [3, 20, 40, 200], [3, 30, 80, 300]]
     line = MeasureLineString(line_data, m_given=True)
@@ -146,23 +171,26 @@ def test_3d_line_m():
 
     assert line.length_2d == 30
     assert line.length_3d == 85.95241580617241
-    assert line.length_measure == 300
+    assert line.end_measure == 300
 
     try:
         line.project(Point(0, 0))
     except NotImplementedError:
         assert True
 
-    # todo: check in autocad
+    line_cut = line.cut(-1)
+    assert line_cut.status == CutProfileStatus.undershoot
+    assert line_cut.post_cut == line
 
-    assert line.cut(-1)[0] is None
-    assert line.cut(-1)[1] == line
-    # todo: add better test for cut_on_measure
-    assert len(line.cut(50))
-    assert line.cut(301)[0] == line
-    assert line.cut(301)[1] is None
+    line_cut = line.cut(350)
+    assert line_cut.status == CutProfileStatus.overshoot
+    assert line_cut.result == line
+    assert line_cut.post_cut is None
 
-    assert line.cut_profile(0, 50).length_3d == 22.360679774997898
+    line_cut = line.cut(150)
+    assert line_cut.status == CutProfileStatus.valid
+    assert line_cut.result.start_measure == line.start_measure
+    assert line_cut.post_cut.start_measure == line_cut.result.end_measure
 
 
 # def test_schema_line_m():
@@ -178,7 +206,7 @@ def test_3d_line_m():
 #         acad.DrawShapelyObject(line.shapely)
 #
 #         acad.DrawText( item['attributes']['name'], line.shapely.centroid)
-#         cut = line.length_measure * 0.2
+#         cut = line.end_measure * 0.2
 #         measure_cut = line.cut_on_measure(cut)
 #         # if measure_cut[0] is not None:
 #         #     acad.DrawShapelyObject(measure_cut[0].shapely, color=5)
@@ -188,7 +216,7 @@ def test_3d_line_m():
 #             start = 500
 #             end = 6000
 #         else:
-#             start = line.length_measure * 0.5
-#             end = line.length_measure * 0.8
+#             start = line.end_measure * 0.5
+#             end = line.end_measure * 0.8
 #         profile_cut = line.cut_profile(start, end)
 #         acad.DrawShapelyObject(profile_cut.shapely, color=3)

@@ -137,9 +137,9 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] implement "point on side of line"
 - [X] return profile line on from measure as shapely
 - [X] return profile line on from and to measures as shapely
-- [ ] return line and profile objects
-- [X] support for given m values
-- [ ] stable main api
+- [X] return line and profile objects
+- [ ] support for given m values
+- [ ] sort of stable main api...
 - [X] autocad tools as dependency in a separate project [shapelyAcad](https://github.com/Hazedd/shapelyAcad)
 - [ ] version 0.1.0-beta 
 - [ ] shapley helpers as dependency in a separate project [shapelyToolbox](https://github.com/Hazedd/shapelyToolbox)
@@ -148,6 +148,7 @@ Feel free to do some black math magic, add test or make suggestions.
 - [ ] clear commit history
 - [ ] version 0.2.0-alpha 
 - [ ] make it work without shapely but easy to use with shapely
+- [ ] ....
 - [ ] 100% test coverage
 - [ ] version 1.0.0
 
