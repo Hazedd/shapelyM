@@ -88,10 +88,10 @@ projection = line_measure.project(Point(0, 5, 0))
 ### Returns:
 shapelyM.LineProjection
 ```python
-{   'azimuth': 0.0
-    'distance_along_line': 7.0710678118654755,
-    'distance_to_line_2d': 3.0,
-    'distance_to_line_3d': 5.830951894845301,
+{   'azimuth': float,
+    'distance_along_line': float,
+    'distance_to_line_2d': float,
+    'distance_to_line_3d': float,
     'functional_direction': shapelyM.FunctionalDirection
     'point': shapelyM.MeasurePoint, 
     'point_on_line': shapelyM.MeasurePoint, 
@@ -137,11 +137,12 @@ Feel free to do some black math magic, add test or make suggestions.
 - [X] implement "point on side of line"
 - [X] return profile line on from measure as shapely
 - [X] return profile line on from and to measures as shapely
-- [X] support for given m values 
+- [ ] return line and profile objects
+- [X] support for given m values
 - [ ] stable main api
-- [ ] autocad tools as dependency in a separate project
+- [X] autocad tools as dependency in a separate project [shapelyAcad](https://github.com/Hazedd/shapelyAcad)
 - [ ] version 0.1.0-beta 
-- [ ] shapley tools as dependency in a separate project
+- [ ] shapley helpers as dependency in a separate project [shapelyToolbox](https://github.com/Hazedd/shapelyToolbox)
 - [ ] refactor
 - [ ] mkdocs documentation generation
 - [ ] clear commit history

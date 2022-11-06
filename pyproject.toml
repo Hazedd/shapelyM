@@ -35,7 +35,7 @@ dev = [
     "pytest-cov",
     "pytest-mock",
     "bumpversion",
-    "pyautocad",
+    "shapelyAcad",
 ]
 
 [project.urls]

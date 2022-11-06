@@ -25,7 +25,6 @@ class MeasurePoint:
         self.y = float(y)
         self.z = z
         self.m = m
-        # self.shapely = Point(self.coordinate_list())
 
     def shapely(self):
         """Returns a shapely Point object."""

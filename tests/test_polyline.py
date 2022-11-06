@@ -6,6 +6,12 @@ from shapely.ops import linemerge
 
 from shapelyM.measureLineString import MeasureLineString
 from shapelyM.measurePoint import MeasurePoint
+from tests.acadDebug.draw_in_cad import (
+    draw_measure_line_in_autocad,
+    draw_projection_in_autocad,
+)
+
+DRAW_ACAD = True
 
 
 class TestSimplePolyline:
@@ -30,10 +36,19 @@ class TestSimplePolyline:
         return fixture
 
     def test_init_2d(self, simple_2d_line):
+        if DRAW_ACAD:
+            draw_measure_line_in_autocad(simple_2d_line)
         assert simple_2d_line is not None
 
     def test_init_3d(self, simple_3d_line):
+        if DRAW_ACAD:
+            draw_measure_line_in_autocad(simple_3d_line)
         assert simple_3d_line is not None
+
+    def test_init_3d_z_increase(self, simple_3d_line_z_increase):
+        if DRAW_ACAD:
+            draw_measure_line_in_autocad(simple_3d_line_z_increase)
+        assert simple_3d_line_z_increase is not None
 
     def test_length_2d(self, simple_2d_line):
         assert simple_2d_line.length_2d == 30
@@ -51,8 +66,11 @@ class TestSimplePolyline:
         ],
     )
     def test_measure_overshoot_3d(self, simple_3d_line, points):
-        tester = simple_3d_line.project(points)
-        assert tester.distance_along_line == simple_3d_line.length_3d
+        projection = simple_3d_line.project(points)
+        if DRAW_ACAD:
+            draw_measure_line_in_autocad(simple_3d_line)
+            draw_projection_in_autocad(projection)
+        assert projection.distance_along_line == simple_3d_line.length_3d
 
     @pytest.mark.parametrize(
         "points", [MeasurePoint(randint(-100, 100), 31) for i in range(0, random_values_to_test)]

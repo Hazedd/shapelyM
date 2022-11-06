@@ -112,15 +112,17 @@ def test_2d_line_m():
     except NotImplementedError:
         assert True
 
-    # measure_cut = line.cut_on_measure(120)
-
-    # acad.DrawShapelyObject(line.shapely)
-    # if measure_cut[0] is not None:
-    #     acad.DrawShapelyObject(measure_cut[0].shapely, color=5)
-    # if measure_cut[1] is not None:
-    #     acad.DrawShapelyObject(measure_cut[1].shapely, color=6)
+    # measure_cut = line.cut(120)
     # profile_cut = line.cut_profile(250, 275)
-    # acad.DrawShapelyObject(profile_cut.shapely, color=3)
+
+    # measure_cut = line.cut(120)
+    # acad.draw_shapely(line.shapely)
+    # if measure_cut[0] is not None:
+    #     acad.draw_shapely(measure_cut[0].shapely, color=5)
+    # if measure_cut[1] is not None:
+    #     acad.draw_shapely(measure_cut[1].shapely, color=6)
+    # profile_cut = line.cut_profile(250, 275)
+    # acad.draw_shapely(profile_cut.shapely, color=3)
 
     assert line.cut(-1)[0] is None
     assert line.cut(-1)[1] == line
@@ -163,9 +165,6 @@ def test_3d_line_m():
     assert line.cut_profile(0, 50).length_3d == 22.360679774997898
 
 
-# from shapelyM.debug.autocad import AutocadService
-# acad = AutocadService()
-#
 # def test_schema_line_m():
 #     file_path = r""
 #

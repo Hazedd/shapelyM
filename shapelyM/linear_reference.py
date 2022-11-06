@@ -156,24 +156,4 @@ def get_line_projection(
         distance_along_line=distance_along_line,
     )
 
-    if debug:
-        draw_projection_in_autocad(result)
     return result
-
-
-def draw_projection_in_autocad(line_projection: LineProjection):
-    """Debug methode to draw line_projection in autocad."""
-    from debug.autocad import AutocadService
-
-    acad = AutocadService()
-    acad.DrawShapelyObject(line_projection.point.shapely)
-    acad.DrawText(f"{line_projection.side_of_line.value}", line_projection.point.shapely)
-    acad.DrawShapelyObject(line_projection.point_on_line.shapely)
-    acad.DrawShapelyObject(
-        LineString(
-            [
-                line_projection.point_on_line.shapely,
-                line_projection.point.shapely,
-            ]
-        )
-    )
