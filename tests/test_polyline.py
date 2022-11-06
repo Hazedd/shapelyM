@@ -11,7 +11,7 @@ from tests.acad_debug.draw_in_cad import (
     draw_projection_in_autocad,
 )
 
-DRAW_ACAD = True
+DRAW_ACAD = False
 
 
 class TestSimplePolyline:
